@@ -39,7 +39,16 @@ los mismos.
 
 # Construccion de modelos
 
+def newAnalyzer():
+    """
+    Inicializa el analizador 
+    """
+    analyzer = {}
+    return analyzer
+
 # Funciones para agregar informacion al catalogo
+
+    
 
 # Funciones para creacion de datos
 
