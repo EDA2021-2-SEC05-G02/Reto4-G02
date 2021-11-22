@@ -96,7 +96,7 @@ def newAnalyzer():
         return analyzer
         
     except Exception as exp:
-        error.reraise(exp, 'Error in model: newAnalyzer')
+        error.reraise(exp, 'Error in model:newAnalyzer')
 
 
     
@@ -117,7 +117,7 @@ def addAirport(analyzer, airport):
     except Exception as exp:
         error.reraise(exp, 'Error in model:addAirport')
 
-def AddCities(analyzer, city):
+def AddCity(analyzer, city):
     """
     Agrega una ciudad al mapa de ciudades
     """
@@ -128,6 +128,7 @@ def AddCities(analyzer, city):
 def AddConnections(analyzer, routes):
     """
     Adiciona un arco entre dos aeropuertos.
+    Se obtiene el arco de departure a destination y viceversa.
     """
     edge = gr.getEdge(analyzer['connections'], routes['Departure'], routes['Destination'])
     if edge is None:

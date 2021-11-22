@@ -76,9 +76,9 @@ def LoadWorldCities(analyzer):
     worldcitiesfile = cf.data_dir + "worldcities.csv"
     input_file = csv.DictReader(open(worldcitiesfile, encoding="utf-8"),
                                 delimiter=",")
-                                
-    for cities in input_file:
-        model.AddCities(analyzer, cities)
+
+    for city in input_file:
+        model.AddCity(analyzer, city)
 
     return analyzer
 
