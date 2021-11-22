@@ -61,12 +61,11 @@ def loadAirports(analyzer):
         model.addAirport(analyzer, airport)
     return analyzer
 
+
 def loadRoutes(analyzer):
     routesfile = cf.data_dir + "routes_full.csv"
     input_file = csv.DictReader(open(routesfile, encoding="utf-8"),
                                 delimiter=",")
-    for route in input_file:
-        model.addRoute(analyzer, route)
 
     for routes in input_file:
         model.AddConnections(analyzer, routes)
@@ -77,9 +76,7 @@ def LoadWorldCities(analyzer):
     worldcitiesfile = cf.data_dir + "worldcities.csv"
     input_file = csv.DictReader(open(worldcitiesfile, encoding="utf-8"),
                                 delimiter=",")
-    for city in input_file:
-        model.addCity(analyzer, city)
-
+                                
     for cities in input_file:
         model.AddCities(analyzer, cities)
 
