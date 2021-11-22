@@ -124,8 +124,8 @@ def FirstAirportandLastCity():
     input_file = csv.DictReader(open(airportfile, encoding="utf-8"),
                                 delimiter=",")
 
-    firstcity = next(input_file)
-    return firstcity, lastcity
+    firstairport = next(input_file)
+    return firstairport, lastcity
     
 
 

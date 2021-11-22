@@ -55,6 +55,7 @@ def newAnalyzer():
         'connections': None,
         'strong_conected': None,
         'components': None,
+        'paths': None,
         }
 
         """
@@ -152,7 +153,7 @@ def AddConnections(analyzer, routes):
     """
     Si el arco de destino a origen del grafo dirigido no esta vacio, se agregan los vertices de destino y origen al grafo no dirigido.
     Si el arco de destino a origen del grafo no dirigido esta vacio, se agrega el arco de destino a origen junto con el peso.
-    
+
     """
 
     if edgeDestinationtoDeparture is not None:
@@ -170,8 +171,6 @@ def AddConnections(analyzer, routes):
 
     return analyzer, edgeDestinationtoDeparture is not None
 
-
-# Funciones para creacion de datos
 
 # Funciones de consulta
 
