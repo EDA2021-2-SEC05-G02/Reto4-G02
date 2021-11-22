@@ -34,6 +34,14 @@ def printFirstAirport(airport):
    x.add_row([airport['IATA'], airport['Name'], airport['City'], airport['Country'], airport['Latitude'], airport['Longitude']])
    print(x)
 
+def printLastCity(city):
+   x = PrettyTable(hrules=prettytable.ALL)
+   x.field_names = ['City', 'population', 'lat', 'lng']
+   x.add_row([city['city_ascii'], city['population'], city['lat'], city['lng']])
+   print(x)
+
+
+
 
 """
 El controlador se encarga de mediar entre la vista y el modelo.
@@ -57,14 +65,10 @@ def loadData(analyzer):
     # Carga de datos de aeropuertos
     loadAirports(analyzer)
 
-    # Arreglar print del primer aeropuerto del grafo dirigido
-
-
     # Carga de datos de rutas
     routes = loadRoutes(analyzer)
     print('El primer aeropuerto cargado del grafo no dirgido es')
     printFirstAirport(routes[1])
-
 
     # Carga de datos de ciudades
     LoadWorldCities(analyzer)
@@ -75,7 +79,6 @@ def loadAirports(analyzer):
     airportfile = cf.data_dir + "airports_full.csv"
     input_file = csv.DictReader(open(airportfile, encoding="utf-8"),
                                 delimiter=",")
-    # first = next(input_file)
     for airport in input_file:
         model.addVertex(analyzer, airport)
         model.addAirport(analyzer, airport)
@@ -108,6 +111,22 @@ def LoadWorldCities(analyzer):
         model.AddCity(analyzer, city)
 
     return analyzer
+
+
+def FirstAirportandLastCity():
+    worldcitiesfile = cf.data_dir + "worldcities.csv"
+    input_file = csv.DictReader(open(worldcitiesfile, encoding="utf-8"),
+                                delimiter=",")
+    lista = list(input_file)
+    lastcity = lista[-1]
+
+    airportfile = cf.data_dir + "airports_full.csv"
+    input_file = csv.DictReader(open(airportfile, encoding="utf-8"),
+                                delimiter=",")
+
+    firstcity = next(input_file)
+    return firstcity, lastcity
+    
 
 
 def totalAirperGraph(analyzer):

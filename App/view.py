@@ -28,8 +28,21 @@ import time as tm
 from DISClib.ADT import stack
 import controller
 from DISClib.ADT import list as lt
+import prettytable 
+from prettytable import PrettyTable
 assert cf
 
+def printFirstAirport(airport):
+   x = PrettyTable(hrules=prettytable.ALL)
+   x.field_names = ["IATA", "Name", "City", "Country", "Latitude", "Longitude"]
+   x.add_row([airport['IATA'], airport['Name'], airport['City'], airport['Country'], airport['Latitude'], airport['Longitude']])
+   print(x)
+
+def printLastCity(city):
+   x = PrettyTable(hrules=prettytable.ALL)
+   x.field_names = ['City', 'population', 'lat', 'lng']
+   x.add_row([city['city_ascii'], city['population'], city['lat'], city['lng']])
+   print(x)
 
 """
 La vista se encarga de la interacción con el usuario
@@ -55,6 +68,11 @@ catalog = None
 def LoadData(cont):
     print("Cargando información de los aeropuertos ....")
     controller.loadData(cont)
+    data = controller.FirstAirportandLastCity()
+    print('El primer aeropuerto cargado del grafo dirgido es')
+    printFirstAirport(data[0])
+    print('La ultima ciudad cargada es')
+    printLastCity(data[1])
     numedges = controller.totalConnectionsperGraph(cont)
     numvertex = controller.totalAirperGraph(cont)
     CitySize = controller.CitySize(cont)
@@ -64,11 +82,6 @@ def LoadData(cont):
     print('Numero de rutas aereas del grafo no dirigido: ' + str(numedges[1]))
     print('El total de ciudades es: ' + str(CitySize))
 
-
-
-def Requerimiento1(cont):
-    print('El número de aeropuertos interconectados es: ' +
-          str(controller.connectedComponents(cont)))
 
 
 """
@@ -85,7 +98,7 @@ def run():
             LoadData(cont)
     
         elif int(inputs[0]) == 3:
-            Requerimiento1(cont)
+            pass
 
         elif int(inputs[0]) == 4:
             pass

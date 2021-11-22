@@ -133,15 +133,14 @@ def AddCity(analyzer, city):
     """
     Se agrega al mapa de ciudades el key(City) y value(city).
     """
-    mp.put(analyzer['Cities'], city['city'], city)
+    mp.put(analyzer['Cities'], city['city_ascii'], city)
     return analyzer
 
 
 def AddConnections(analyzer, routes):
     """
     Adiciona un arco entre dos aeropuertos.
-    Se obtiene el arco de departure a destination y viceversa.
-    Se agrega el arco al grafo de conexiones y se agrega el arco al grafo de conexiones fuertes.
+
     """
     edge = gr.getEdge(analyzer['connections'], routes['Departure'], routes['Destination'])
     if edge is None:
@@ -149,13 +148,17 @@ def AddConnections(analyzer, routes):
 
     edgeDestinationtoDeparture = gr.getEdge(analyzer['connections'], routes['Destination'], routes['Departure'])
     
+    # Si el arco de destino a origen no esta vacio, se verifican las siguentes condiciones. Si esta vacio, se crean los arcos
     if edgeDestinationtoDeparture is not None:
+        # Si no se contiene el vertice de destination en el grafo de conexiones fuertes, se agrega
         if not gr.containsVertex(analyzer['strong_conected'], routes['Destination']):
             gr.insertVertex(analyzer['strong_conected'], routes['Destination'])
-
+        
+        # Si no se contiene el vertice de departure en el grafo de conexiones fuertes, se agrega
         if not gr.containsVertex(analyzer['strong_conected'], routes['Departure']):
             gr.insertVertex(analyzer['strong_conected'], routes['Departure'])
-
+        
+        # Si arco que se busca obtener esta vacio, se agrega
         if gr.getEdge(analyzer['strong_conected'], routes['Destination'], routes['Departure']) is None:
             gr.addEdge(analyzer['strong_conected'], routes['Destination'], routes['Departure'], routes['distance_km'])
 
@@ -201,6 +204,7 @@ def CitySize(analyzer):
     """
     Retorna el tamaño del mapa de ciudades
     """
+    # Revisar el tamano de ciudades
     return mp.size(analyzer['Cities'])
 
 
