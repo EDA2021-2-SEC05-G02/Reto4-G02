@@ -119,7 +119,7 @@ def addAirport(analyzer, airport):
 
 def AddCity(analyzer, city):
     """
-    Agrega una ciudad al mapa de ciudades
+    Se agrega al mapa de ciudades el key(City) y value(city).
     """
     mp.put(analyzer['Cities'], city['city'], city)
     return analyzer
