@@ -148,7 +148,13 @@ def AddConnections(analyzer, routes):
 
     edgeDestinationtoDeparture = gr.getEdge(analyzer['connections'], routes['Destination'], routes['Departure'])
     
-    # Si el arco de destino a origen no esta vacio, se verifican las siguentes condiciones. Si esta vacio, se crean los arcos
+
+    """
+    Si el arco de destino a origen del grafo dirigido no esta vacio, se agregan los vertices de destino y origen al grafo no dirigido.
+    Si el arco de destino a origen del grafo no dirigido esta vacio, se agrega el arco de destino a origen junto con el peso.
+    
+    """
+
     if edgeDestinationtoDeparture is not None:
         # Si no se contiene el vertice de destination en el grafo de conexiones fuertes, se agrega
         if not gr.containsVertex(analyzer['strong_conected'], routes['Destination']):
