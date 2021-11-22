@@ -81,7 +81,8 @@ def loadAirports(analyzer):
                                 delimiter=",")
     for airport in input_file:
         model.addVertex(analyzer, airport)
-        model.addAirport(analyzer, airport)
+        model.addIATA_Airport(analyzer, airport)
+        model.addName_Airport(analyzer, airport)
         
     return analyzer
 

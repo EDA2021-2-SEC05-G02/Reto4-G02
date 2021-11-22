@@ -50,8 +50,6 @@ def newAnalyzer():
     """
     try:
         analyzer = {
-        'Airports': None,
-        'Cities': None,
         'connections': None,
         'strong_conected': None,
         'components': None,
@@ -59,13 +57,22 @@ def newAnalyzer():
         }
 
         """
-        Se crea un mapa de los aeropuertos
+        Se crea un mapa de los aeropuertos por IATA 
         """
 
-        analyzer['Airports'] = mp.newMap(numelements=9076, 
+        analyzer['IATA_Airport'] = mp.newMap(numelements=9076, 
                                          maptype='CHAINING',
                                          loadfactor=4.0,
                                          comparefunction=compareAirportIDs)
+
+        """
+        Se crea el mapa de los aeropuertos por nombre
+        """
+        analyzer['Name_Airport'] = mp.newMap(numelements=9076, 
+                                         maptype='CHAINING',
+                                         loadfactor=4.0,
+                                         comparefunction=compareAirportIDs)
+
 
         """
         Se crea un grafo dirigido de las conexiones de las rutas
@@ -78,7 +85,7 @@ def newAnalyzer():
                                               comparefunction=compareAirportIDs)
 
         """
-        # Falta - Crear grafo no dirigido 
+        Se crea un grafo no dirigido de las conexiones de las rutas
         """
 
         analyzer['strong_conected'] = gr.newGraph(datastructure='ADJ_LIST',
@@ -104,9 +111,32 @@ def newAnalyzer():
         error.reraise(exp, 'Error in model:newAnalyzer')
 
 
-    
+# Funciones para agregar informacion a los  mapas
 
-# Funciones para agregar informacion
+def addIATA_Airport(analyzer, airport):
+    """
+    Se agrega al mapa de aeropuertos el key(IATA) y value(aeropuerto).
+    """
+    mp.put(analyzer['IATA_Airport'], airport['IATA'], airport)
+    return analyzer
+
+
+def addName_Airport(analyzer, airport):
+    """
+    Se agrega al mapa de aeropuertos el key(Name) y value(IATA).
+    """
+    mp.put(analyzer['Name_Airport'], airport['Name'], airport['IATA'])
+    return analyzer
+
+
+def AddCity(analyzer, city):
+    """
+    Se agrega al mapa de ciudades el key(City) y value(city).
+    """
+    mp.put(analyzer['Cities'], city['city_ascii'], city)
+    return analyzer
+
+# Funciones para agregar informacion grafos
 
 def addVertex(analyzer, airport):
     """
@@ -120,22 +150,6 @@ def addVertex(analyzer, airport):
 
     except Exception as exp:
         error.reraise(exp, 'Error in model:addAirport')
-
-
-def addAirport(analyzer, airport):
-    """
-    Se agrega al mapa de aeropuertos el key(IATA) y value(aeropuerto).
-    """
-    mp.put(analyzer['Airports'], airport['IATA'], airport)
-    return analyzer
-
-
-def AddCity(analyzer, city):
-    """
-    Se agrega al mapa de ciudades el key(City) y value(city).
-    """
-    mp.put(analyzer['Cities'], city['city_ascii'], city)
-    return analyzer
 
 
 def AddConnections(analyzer, routes):
@@ -178,7 +192,7 @@ def SearchbyIATA(analyzer, IATA):
     """
     Buscar aeropuerto por IATA
     """        
-    return me.getValue(mp.get(analyzer['Airports'], IATA))
+    return me.getValue(mp.get(analyzer['IATA_Airport'], IATA))
 
 def connectedComponents(analyzer):
     """
