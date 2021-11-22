@@ -53,6 +53,7 @@ def newAnalyzer():
         'Airports': None,
         'Cities': None,
         'connections': None,
+        'strong_conected': None,
         'components': None,
         }
 
@@ -79,7 +80,10 @@ def newAnalyzer():
         # Falta - Crear grafo no dirigido 
         """
 
-
+        analyzer['strong_conected'] = gr.newGraph(datastructure='ADJ_LIST',
+                                              directed=False,
+                                              size=92606,
+                                              comparefunction=compareAirportIDs)
 
 
         """
@@ -103,19 +107,27 @@ def newAnalyzer():
 
 # Funciones para agregar informacion
 
-def addAirport(analyzer, airport):
+def addVertex(analyzer, airport):
     """
     Adiciona identificador IATA del aeropuerto como vertice del grafo
-    y se agrega al mapa de aeropuertos el key(IATA) y value(aeropuerto).
+
     """
     try: 
         if not gr.containsVertex(analyzer['connections'], airport['IATA']):
             gr.insertVertex(analyzer['connections'], airport['IATA'])
-    
-        mp.put(analyzer['Airports'], airport['IATA'], airport)
+        return analyzer
 
     except Exception as exp:
         error.reraise(exp, 'Error in model:addAirport')
+
+
+def addAirport(analyzer, airport):
+    """
+    Se agrega al mapa de aeropuertos el key(IATA) y value(aeropuerto).
+    """
+    mp.put(analyzer['Airports'], airport['IATA'], airport)
+    return analyzer
+
 
 def AddCity(analyzer, city):
     """
@@ -129,21 +141,36 @@ def AddConnections(analyzer, routes):
     """
     Adiciona un arco entre dos aeropuertos.
     Se obtiene el arco de departure a destination y viceversa.
+    Se agrega el arco al grafo de conexiones y se agrega el arco al grafo de conexiones fuertes.
     """
     edge = gr.getEdge(analyzer['connections'], routes['Departure'], routes['Destination'])
     if edge is None:
         gr.addEdge(analyzer['connections'], routes['Departure'], routes['Destination'], routes['distance_km'])
 
-    edgeDeparturetoDestination = gr.getEdge(analyzer['connections'], routes['Departure'], routes['Destination'])
     edgeDestinationtoDeparture = gr.getEdge(analyzer['connections'], routes['Destination'], routes['Departure'])
-    # Obtener el edge del grafo no dirigido y agregalo como vertice.
     
-    return analyzer
+    if edgeDestinationtoDeparture is not None:
+        if not gr.containsVertex(analyzer['strong_conected'], routes['Destination']):
+            gr.insertVertex(analyzer['strong_conected'], routes['Destination'])
+
+        if not gr.containsVertex(analyzer['strong_conected'], routes['Departure']):
+            gr.insertVertex(analyzer['strong_conected'], routes['Departure'])
+
+        if gr.getEdge(analyzer['strong_conected'], routes['Destination'], routes['Departure']) is None:
+            gr.addEdge(analyzer['strong_conected'], routes['Destination'], routes['Departure'], routes['distance_km'])
+
+    return analyzer, edgeDestinationtoDeparture is not None
 
 
 # Funciones para creacion de datos
 
 # Funciones de consulta
+
+def SearchbyIATA(analyzer, IATA):
+    """
+    Buscar aeropuerto por IATA
+    """        
+    return me.getValue(mp.get(analyzer['Airports'], IATA))
 
 def connectedComponents(analyzer):
     """
@@ -153,17 +180,28 @@ def connectedComponents(analyzer):
     analyzer['components'] = scc.KosarajuSCC(analyzer['connections'])
     return scc.connectedComponents(analyzer['components'])
 
-def totalAir(analyzer):
+def totalAirperGraph(analyzer):
     """
-    Retorna el total de aeropuertos (vertices) del grafo
+    Retorna el total de aeropuertos (vertices) de los grafos
     """
-    return gr.numVertices(analyzer['connections'])
+    conections = gr.numVertices(analyzer['connections'])
+    strong = gr.numVertices(analyzer['strong_conected'])
+    return conections, strong
 
-def totalConnections(analyzer):
+def totalConnectionsperGraph(analyzer):
     """
-    Retorna el total arcos del grafo
+    Retorna el total arcos de los grafos
     """
-    return gr.numEdges(analyzer['connections'])
+    conections = gr.numEdges(analyzer['connections'])
+    strong = gr.numEdges(analyzer['strong_conected'])
+    return conections, strong
+
+
+def CitySize(analyzer):
+    """
+    Retorna el tamaño del mapa de ciudades
+    """
+    return mp.size(analyzer['Cities'])
 
 
 

@@ -20,6 +20,7 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 
+
 import config as cf
 import sys
 import threading
@@ -52,12 +53,22 @@ def printMenu():
 catalog = None
 
 def LoadData(cont):
-    print("Cargando información de los aerpuertos ....")
+    print("Cargando información de los aeropuertos ....")
     controller.loadData(cont)
-    numedges = controller.totalConnections(cont)
-    numvertex = controller.totalAir(cont)
-    print('Total de aeropuertos: ' + str(numvertex))
-    print('Numero de arcos: ' + str(numedges))
+    numedges = controller.totalConnectionsperGraph(cont)
+    numvertex = controller.totalAirperGraph(cont)
+    CitySize = controller.CitySize(cont)
+    print('Total de aeropuertos del grafo dirigido: ' + str(numvertex[0]))
+    print('Total de aeropuertos del grafo no dirigido: ' + str(numvertex[1]))
+    print('Numero de rutas aereas del grafo dirigido: ' + str(numedges[0]))
+    print('Numero de rutas aereas del grafo no dirigido: ' + str(numedges[1]))
+    print('El total de ciudades es: ' + str(CitySize))
+
+
+
+def Requerimiento1(cont):
+    print('El número de aeropuertos interconectados es: ' +
+          str(controller.connectedComponents(cont)))
 
 
 """
@@ -74,7 +85,7 @@ def run():
             LoadData(cont)
     
         elif int(inputs[0]) == 3:
-            pass
+            Requerimiento1(cont)
 
         elif int(inputs[0]) == 4:
             pass

@@ -23,6 +23,16 @@
 import config as cf
 import model
 import csv
+import prettytable 
+from prettytable import PrettyTable
+from DISClib.ADT import list as lt
+
+
+def printFirstAirport(airport):
+   x = PrettyTable(hrules=prettytable.ALL)
+   x.field_names = ["IATA", "Name", "City", "Country", "Latitude", "Longitude"]
+   x.add_row([airport['IATA'], airport['Name'], airport['City'], airport['Country'], airport['Latitude'], airport['Longitude']])
+   print(x)
 
 
 """
@@ -47,18 +57,29 @@ def loadData(analyzer):
     # Carga de datos de aeropuertos
     loadAirports(analyzer)
 
+    # Arreglar print del primer aeropuerto del grafo dirigido
+
+
     # Carga de datos de rutas
-    loadRoutes(analyzer)
+    routes = loadRoutes(analyzer)
+    print('El primer aeropuerto cargado del grafo no dirgido es')
+    printFirstAirport(routes[1])
+
 
     # Carga de datos de ciudades
     LoadWorldCities(analyzer)
+
+
 
 def loadAirports(analyzer):
     airportfile = cf.data_dir + "airports_full.csv"
     input_file = csv.DictReader(open(airportfile, encoding="utf-8"),
                                 delimiter=",")
+    # first = next(input_file)
     for airport in input_file:
+        model.addVertex(analyzer, airport)
         model.addAirport(analyzer, airport)
+        
     return analyzer
 
 
@@ -66,11 +87,17 @@ def loadRoutes(analyzer):
     routesfile = cf.data_dir + "routes_full.csv"
     input_file = csv.DictReader(open(routesfile, encoding="utf-8"),
                                 delimiter=",")
+    first = True
+    first_airport = None
 
     for routes in input_file:
-        model.AddConnections(analyzer, routes)
-
-    return analyzer
+        _,dual = model.AddConnections(analyzer, routes)
+        if dual and first:
+            first = False
+            first_airport = routes['Departure']
+    
+    first = model.SearchbyIATA(analyzer, first_airport)
+    return analyzer, first
 
 def LoadWorldCities(analyzer):
     worldcitiesfile = cf.data_dir + "worldcities.csv"
@@ -83,18 +110,18 @@ def LoadWorldCities(analyzer):
     return analyzer
 
 
-def totalAir(analyzer):
+def totalAirperGraph(analyzer):
     """
     Total de paradas de autobus
     """
-    return model.totalAir(analyzer)
+    return model.totalAirperGraph(analyzer)
 
 
-def totalConnections(analyzer):
+def totalConnectionsperGraph(analyzer):
     """
     Total de enlaces entre las paradas
     """
-    return model.totalConnections(analyzer)
+    return model.totalConnectionsperGraph(analyzer)
 
 
 def connectedComponents(analyzer):
@@ -102,6 +129,19 @@ def connectedComponents(analyzer):
     Numero de componentes fuertemente conectados
     """
     return model.connectedComponents(analyzer)
+
+
+def getFistAirportperGraph(analyzer):
+    """
+    Primera parada del grafo
+    """
+    return model.getFistAirportperGraph(analyzer)
+
+def CitySize(analyzer):
+    """
+    Numero de ciudades
+    """
+    return model.CitySize(analyzer)
 
 
 # Funciones de ordenamiento
