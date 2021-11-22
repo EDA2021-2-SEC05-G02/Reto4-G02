@@ -22,6 +22,9 @@
 
 import config as cf
 import sys
+import threading
+import time as tm
+from DISClib.ADT import stack
 import controller
 from DISClib.ADT import list as lt
 assert cf
@@ -36,44 +39,66 @@ operación solicitada
 
 def printMenu():
     print("Bienvenido")
-    print("1- Cargar información en el catálogo")
-    print("2- (Req 1) Encontrar puntos de interconexión aérea")
-    print("3- (Req 2) Encontrar clústeres de tráfico aéreo")
-    print("4- (Req 3) Encontrar la ruta más corta entre ciudades")
-    print("5- (Req 4) Utilizar las millas de viajero")
-    print("6- (Req 5) Cuantificar el efecto de un aeropuerto cerrado")
-    print("7- (Bono) Comparar con servicio WEB externo")
-    print("0- Salir")
+    print("1- Inicializar Analizador")
+    print("2- Cargar información de los aeropuertos")
+    print("3- (Req 1) Encontrar puntos de interconexión aérea")
+    print("4- (Req 2) Encontrar clústeres de tráfico aéreo")
+    print("5- (Req 3) Encontrar la ruta más corta entre ciudades")
+    print("6- (Req 4) Utilizar las millas de viajero")
+    print("7- (Req 5) Cuantificar el efecto de un aeropuerto cerrado")
+    print("8- (Bono) Comparar con servicio WEB externo")
+    print("9- Salir")
 
 catalog = None
+
+def LoadData(cont):
+    print("Cargando información de los aerpuertos ....")
+    controller.loadData(cont)
+    numedges = controller.totalConnections(cont)
+    numvertex = controller.totalAir(cont)
+    print('Total de aeropuertos: ' + str(numvertex))
+    print('Numero de arcos: ' + str(numedges))
+
 
 """
 Menu principal
 """
-while True:
-    printMenu()
-    inputs = input('Seleccione una opción para continuar\n')
-    if int(inputs[0]) == 1:
-        print("Cargando información de los archivos ....")
+def run():
+    while True:
+        printMenu()
+        inputs = input('Seleccione una opción para continuar\n')
+        if int(inputs[0]) == 1:
+            cont = controller.initAnalyzer()
 
-    elif int(inputs[0]) == 2:
-        pass
+        elif int(inputs[0]) == 2:
+            LoadData(cont)
     
-    elif int(inputs[0]) == 3:
-        pass
+        elif int(inputs[0]) == 3:
+            pass
 
-    elif int(inputs[0]) == 4:
-        pass
+        elif int(inputs[0]) == 4:
+            pass
 
-    elif int(inputs[0]) == 5:
-        pass
+        elif int(inputs[0]) == 5:
+            pass
 
-    elif int(inputs[0]) == 6:
-        pass
+        elif int(inputs[0]) == 6:
+            pass
 
-    elif int(inputs[0]) == 7:
-        pass
+        elif int(inputs[0]) == 7:
+            pass
 
-    else:
-        sys.exit(0)
-sys.exit(0)
+        elif int(inputs[0]) == 8:
+            pass
+
+        else:
+            sys.exit(0)
+    sys.exit(0)
+
+if __name__ == "__main__":
+    threading.stack_size(67108864)
+    sys.setrecursionlimit(2 ** 20)  
+    thread = threading.Thread(target=run)
+    thread.start()
+
+    

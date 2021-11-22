@@ -59,6 +59,8 @@ def loadAirports(analyzer):
     airportfile = cf.data_dir + "airports_full.csv"
     input_file = csv.DictReader(open(airportfile, encoding="utf-8"),
                                 delimiter=",")
+    for airport in input_file:
+        model.addAirport(analyzer, airport)
 
     return analyzer
 
@@ -67,6 +69,9 @@ def loadRoutes(analyzer):
     routesfile = cf.data_dir + "routes_full.csv"
     input_file = csv.DictReader(open(routesfile, encoding="utf-8"),
                                 delimiter=",")
+
+    for routes in input_file:
+        model.AddConnections(analyzer, routes)
 
     return analyzer
 
@@ -77,7 +82,32 @@ def LoadWorldCities(analyzer):
     input_file = csv.DictReader(open(worldcitiesfile, encoding="utf-8"),
                                 delimiter=",")
 
+    for cities in input_file:
+        model.AddCities(analyzer, cities)
+
     return analyzer
+
+
+def totalAir(analyzer):
+    """
+    Total de paradas de autobus
+    """
+    return model.totalAir(analyzer)
+
+
+def totalConnections(analyzer):
+    """
+    Total de enlaces entre las paradas
+    """
+    return model.totalConnections(analyzer)
+
+
+def connectedComponents(analyzer):
+    """
+    Numero de componentes fuertemente conectados
+    """
+    return model.connectedComponents(analyzer)
+
 
 # Funciones de ordenamiento
 
