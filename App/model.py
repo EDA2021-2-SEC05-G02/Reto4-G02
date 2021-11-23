@@ -122,7 +122,7 @@ def addIATA_Airport(analyzer, airport):
 
 def addName_Airport(analyzer, airport):
     """
-    Se agrega al mapa de aeropuertos el key(Name) y value(IATA).
+    Se agrega al mapa de aeropuertos el key(Name) y value(IATA). Por si acaso
     """
     mp.put(analyzer['Name_Airport'], airport['Name'], airport['IATA'])
     return analyzer
@@ -196,7 +196,7 @@ def Kosajaru(analyzer):
 
 def SearchbyIATA(analyzer, IATA):
     """
-    Buscar aeropuerto por IATA
+    Buscar aeropuerto por IATA y saca el valor
     """        
     return me.getValue(mp.get(analyzer['IATA_Airport'], IATA))
     
@@ -231,8 +231,9 @@ def CitySize(analyzer):
 def AirInterconection(analyzer):
 
     """
-    Retorna la lista de aeropuertos que tienen conexiones entre ellos en cada uno de los grafos y el total de conexiones
+    Retorna la lista de aeropuertos que tienen interconexiones entre ellos en cada uno de los grafos y el total de conexiones
     """
+    
     pass
 
 #! Req 2

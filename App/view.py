@@ -84,13 +84,13 @@ def LoadData(cont):
 
 
 def Requerimiento2(cont):
-    air1 = input('Ingrese el IATA del aeropuerto 1 \n')
-    air2 = input('Ingrese el IATA del aeropuerto 2 \n')
+    air1 = input('Ingrese el IATA del aeropuerto 1: ')
+    air2 = input('Ingrese el IATA del aeropuerto 2: ')
     airport = controller.AirCluster(cont, air1, air2)
     if airport[1]:
-        print('Los aeropuertos estan en el mismo cluster')
+        print('Los aeropuertos con identificador(IATA) ' + air1 + ' y ' + air2 + ' estan en el mismo cluster.')
     else:
-        print('Los aeropuertos no estan en el mismo cluster')
+        print('Los aeropuertos con identificador(IATA) ' + air1 + ' y ' + air2 + ' no estan en el mismo cluster.')
 
     print('El total de clusteres presentes en la red de transporte aereo son: ' + str(airport[0]))
 
