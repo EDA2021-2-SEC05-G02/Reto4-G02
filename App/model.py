@@ -207,23 +207,22 @@ def totalAirperGraph(analyzer):
     Retorna el total de aeropuertos (vertices) de los grafos
     """
     conections = gr.numVertices(analyzer['connections'])
-    strong = gr.numVertices(analyzer['onlyroute'])
-    return conections, strong
+    onlyroute = gr.numVertices(analyzer['onlyroute'])
+    return conections, onlyroute
 
 def totalConnectionsperGraph(analyzer):
     """
     Retorna el total arcos de los grafos
     """
     conections = gr.numEdges(analyzer['connections'])
-    strong = gr.numEdges(analyzer['onlyroute'])
-    return conections, strong
+    onlyroute = gr.numEdges(analyzer['onlyroute'])
+    return conections, onlyroute
 
 
 def CitySize(analyzer):
     """
     Retorna el tamaño del mapa de ciudades
     """
-    # Revisar el tamano de ciudades
     return mp.size(analyzer['Cities'])
 
 
