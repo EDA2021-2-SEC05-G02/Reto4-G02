@@ -20,6 +20,7 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 
+from App.model import Kosajaru
 import config as cf
 import model
 import csv
@@ -72,6 +73,9 @@ def loadData(analyzer):
 
     # Carga de datos de ciudades
     LoadWorldCities(analyzer)
+    Kosajaru(analyzer)
+
+    
 
 
 
@@ -99,6 +103,8 @@ def loadRoutes(analyzer):
         if dual and first:
             first = False
             first_airport = routes['Departure']
+    
+    
     
     first = model.SearchbyIATA(analyzer, first_airport)
     return analyzer, first
@@ -144,11 +150,11 @@ def totalConnectionsperGraph(analyzer):
     return model.totalConnectionsperGraph(analyzer)
 
 
-def connectedComponents(analyzer):
+def AirCluster(analyzer,vertexA, vertexB):
     """
     Numero de componentes fuertemente conectados
     """
-    return model.connectedComponents(analyzer)
+    return model.AirCluster(analyzer,  vertexA, vertexB)
 
 
 def getFistAirportperGraph(analyzer):
@@ -162,6 +168,12 @@ def CitySize(analyzer):
     Numero de ciudades
     """
     return model.CitySize(analyzer)
+
+def Kosaraju(analyzer):
+    """
+    Kosaraju
+    """
+    return model.Kosaraju(analyzer)
 
 
 # Funciones de ordenamiento

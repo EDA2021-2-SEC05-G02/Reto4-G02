@@ -83,6 +83,19 @@ def LoadData(cont):
     print('El total de ciudades es: ' + str(CitySize))
 
 
+def Requerimiento2(cont):
+    air1 = input('Ingrese el IATA del aeropuerto 1 \n')
+    air2 = input('Ingrese el IATA del aeropuerto 2 \n')
+    airport = controller.AirCluster(cont, air1, air2)
+    if airport[1]:
+        print('Los aeropuertos estan en el mismo cluster')
+    else:
+        print('Los aeropuertos no estan en el mismo cluster')
+
+    print('El total de clusteres presentes en la red de transporte aereo son: ' + str(airport[0]))
+
+
+
 
 """
 Menu principal
@@ -101,7 +114,7 @@ def run():
             pass
 
         elif int(inputs[0]) == 4:
-            pass
+            Requerimiento2(cont)
 
         elif int(inputs[0]) == 5:
             pass

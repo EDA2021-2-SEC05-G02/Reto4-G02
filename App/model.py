@@ -52,7 +52,6 @@ def newAnalyzer():
         analyzer = {
         'connections': None,
         'onlyroute': None,
-        'components': None,
         'paths': None,
         }
 
@@ -188,20 +187,19 @@ def AddConnections(analyzer, routes):
 
 # Funciones de consulta
 
+def Kosajaru(analyzer):
+    """
+    Se obtiene Kosajaru
+    """
+    analyzer['components'] = scc.KosarajuSCC(analyzer['connections'])
+
+
 def SearchbyIATA(analyzer, IATA):
     """
     Buscar aeropuerto por IATA
     """        
     return me.getValue(mp.get(analyzer['IATA_Airport'], IATA))
-
-def connectedComponents(analyzer):
-    """
-    Calcula los componentes conectados del grafo dirigido
-    Se utiliza el algoritmo de Kosaraju
-    """
-    analyzer['components'] = scc.KosarajuSCC(analyzer['connections'])
-    return scc.connectedComponents(analyzer['components'])
-
+    
 def totalAirperGraph(analyzer):
     """
     Retorna el total de aeropuertos (vertices) de los grafos
@@ -242,10 +240,10 @@ def AirInterconection(analyzer):
 def AirCluster(analyzer, vertexA, vertexB):
     """
     Retorna el total de clusters presentes en la red de aeropuertos y devuelve un valor booleano si los dos aeropuertos estan en el mismo cluster.
-    Posiblemente implementar la funcion de scc.stronglyConnected(scc, vertexA, vertexB)
     """
-    pass
-
+    total = scc.connectedComponents(analyzer['components'])
+    samecluster =  scc.stronglyConnected(analyzer['components'], vertexA, vertexB)    
+    return total, samecluster
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
