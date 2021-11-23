@@ -171,11 +171,11 @@ def AddConnections(analyzer, routes):
     """
 
     if edgeDestinationtoDeparture is not None:
-        # Si no se contiene el vertice de destination en el grafo de conexiones fuertes, se agrega
+        # Si no se contiene el vertice de destination en el grafo no dirigido, se agrega
         if not gr.containsVertex(analyzer['onlyroute'], routes['Destination']):
             gr.insertVertex(analyzer['onlyroute'], routes['Destination'])
         
-        # Si no se contiene el vertice de departure en el grafo de conexiones fuertes, se agrega
+        # Si no se contiene el vertice de departure en el grafo no dirigido, se agrega
         if not gr.containsVertex(analyzer['onlyroute'], routes['Departure']):
             gr.insertVertex(analyzer['onlyroute'], routes['Departure'])
         
@@ -196,7 +196,7 @@ def SearchbyIATA(analyzer, IATA):
 
 def connectedComponents(analyzer):
     """
-    Calcula los componentes conectados del grafo
+    Calcula los componentes conectados del grafo dirigido
     Se utiliza el algoritmo de Kosaraju
     """
     analyzer['components'] = scc.KosarajuSCC(analyzer['connections'])
@@ -246,7 +246,6 @@ def AirCluster(analyzer, vertexA, vertexB):
     Posiblemente implementar la funcion de scc.stronglyConnected(scc, vertexA, vertexB)
     """
     pass
-    
 
 
 # Funciones utilizadas para comparar elementos dentro de una lista
