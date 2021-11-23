@@ -51,7 +51,7 @@ def newAnalyzer():
     try:
         analyzer = {
         'connections': None,
-        'strong_conected': None,
+        'onlyroute': None,
         'components': None,
         'paths': None,
         }
@@ -88,7 +88,7 @@ def newAnalyzer():
         Se crea un grafo no dirigido de las conexiones de las rutas
         """
 
-        analyzer['strong_conected'] = gr.newGraph(datastructure='ADJ_LIST',
+        analyzer['onlyroute'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=False,
                                               size=92606,
                                               comparefunction=compareAirportIDs)
@@ -172,16 +172,16 @@ def AddConnections(analyzer, routes):
 
     if edgeDestinationtoDeparture is not None:
         # Si no se contiene el vertice de destination en el grafo de conexiones fuertes, se agrega
-        if not gr.containsVertex(analyzer['strong_conected'], routes['Destination']):
-            gr.insertVertex(analyzer['strong_conected'], routes['Destination'])
+        if not gr.containsVertex(analyzer['onlyroute'], routes['Destination']):
+            gr.insertVertex(analyzer['onlyroute'], routes['Destination'])
         
         # Si no se contiene el vertice de departure en el grafo de conexiones fuertes, se agrega
-        if not gr.containsVertex(analyzer['strong_conected'], routes['Departure']):
-            gr.insertVertex(analyzer['strong_conected'], routes['Departure'])
+        if not gr.containsVertex(analyzer['onlyroute'], routes['Departure']):
+            gr.insertVertex(analyzer['onlyroute'], routes['Departure'])
         
         # Si arco que se busca obtener esta vacio, se agrega
-        if gr.getEdge(analyzer['strong_conected'], routes['Destination'], routes['Departure']) is None:
-            gr.addEdge(analyzer['strong_conected'], routes['Destination'], routes['Departure'], routes['distance_km'])
+        if gr.getEdge(analyzer['onlyroute'], routes['Destination'], routes['Departure']) is None:
+            gr.addEdge(analyzer['onlyroute'], routes['Destination'], routes['Departure'], routes['distance_km'])
 
     return analyzer, edgeDestinationtoDeparture is not None
 
@@ -207,7 +207,7 @@ def totalAirperGraph(analyzer):
     Retorna el total de aeropuertos (vertices) de los grafos
     """
     conections = gr.numVertices(analyzer['connections'])
-    strong = gr.numVertices(analyzer['strong_conected'])
+    strong = gr.numVertices(analyzer['onlyroute'])
     return conections, strong
 
 def totalConnectionsperGraph(analyzer):
@@ -215,7 +215,7 @@ def totalConnectionsperGraph(analyzer):
     Retorna el total arcos de los grafos
     """
     conections = gr.numEdges(analyzer['connections'])
-    strong = gr.numEdges(analyzer['strong_conected'])
+    strong = gr.numEdges(analyzer['onlyroute'])
     return conections, strong
 
 
@@ -226,6 +226,27 @@ def CitySize(analyzer):
     # Revisar el tamano de ciudades
     return mp.size(analyzer['Cities'])
 
+
+# Requerimientos
+
+#! Req 1
+
+def AirInterconection(analyzer):
+
+    """
+    Retorna la lista de aeropuertos que tienen conexiones entre ellos en cada uno de los grafos y el total de conexiones
+    """
+    pass
+
+#! Req 2
+
+def AirCluster(analyzer, vertexA, vertexB):
+    """
+    Retorna el total de clusters presentes en la red de aeropuertos y devuelve un valor booleano si los dos aeropuertos estan en el mismo cluster.
+    Posiblemente implementar la funcion de scc.stronglyConnected(scc, vertexA, vertexB)
+    """
+    pass
+    
 
 
 # Funciones utilizadas para comparar elementos dentro de una lista
