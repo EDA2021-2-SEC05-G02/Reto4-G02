@@ -29,6 +29,7 @@ from os import error
 import config as cf
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
+from DISClib.ADT import orderedmap as om
 from DISClib.ADT.graph import gr
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Graphs import scc
@@ -97,11 +98,7 @@ def newAnalyzer():
         """
         Se crea un mapa de las ciudades
         """
-        analyzer['Cities'] = mp.newMap(numelements=92606,
-                                        maptype='CHAINING',
-                                        loadfactor=4.0,
-                                        comparefunction=compareCities)
-        
+        analyzer['Cities'] = om.newMap(omaptype='RBT', comparefunction=compareString)
         
 
 
@@ -131,14 +128,32 @@ def addName_Airport(analyzer, airport):
 
 def AddCity(analyzer, city):
     """
-    Se agrega al mapa de ciudades el key(City) y value(city).
+    Se toma la ciudad del avistamiento y se busca si ya existe 
+    en el arbol dicha ciudad. 
+
+    -Si se encuentra, se adiciona a su lista de la ciudad.
+    -Si no se encuentra, crea un nodo para esa ciudad en el
+     arbol.
     """
-    entry = mp.get(analyzer['Cities'], city['city_ascii'])
+    aircity = city['city_ascii']
+    entry = om.get(analyzer['Cities'], aircity)
     if entry is None:
-        citylist = lt.newList('ARRAY_LIST')
-        lt.addLast(citylist, city)
-        mp.put(analyzer['Cities'], city['city_ascii'], citylist)
-    return analyzer
+        cityentry = newCity(aircity)
+        om.put(analyzer['Cities'], aircity, cityentry)
+    else:
+        cityentry = me.getValue(entry)
+
+    lt.addLast(cityentry['city_value'], city)
+
+def newCity(city):
+    """
+    Crea una entrada en el indice por ciudad, es decir en el arbol
+    binario.
+    """
+    entry = {'city': None, 'city_value': None}
+    entry['city'] = city
+    entry['city_value'] = lt.newList('ARRAY_LIST')
+    return entry
 
 # Funciones para agregar informacion grafos
 
@@ -204,7 +219,8 @@ def SearchbyIATA(analyzer, IATA):
     Buscar aeropuerto por IATA y saca el valor
     """        
     return me.getValue(mp.get(analyzer['IATA_Airport'], IATA))
-    
+
+
 def totalAirperGraph(analyzer):
     """
     Retorna el total de aeropuertos (vertices) de los grafos
@@ -226,7 +242,7 @@ def CitySize(analyzer):
     """
     Retorna el tamaño del mapa de ciudades
     """
-    return mp.size(analyzer['Cities'])
+    return om.size(analyzer['Cities'])
 
 
 # Requerimientos
@@ -287,6 +303,18 @@ def compareroutes(route1, route2):
         return 1
     else:
         return -1
+
+def compareString(str1, str2):
+    """
+    Compara dos strings
+    """
+    if (str1) == (str2):
+        return 0
+    elif (str1) > (str2):
+        return 1
+    else:
+        return -1
+
 
 
 
