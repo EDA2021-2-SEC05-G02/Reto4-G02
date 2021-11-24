@@ -25,7 +25,6 @@
  """
 
 
-from math import modf
 from os import error
 import config as cf
 from DISClib.ADT import list as lt
@@ -41,6 +40,8 @@ assert cf
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
 los mismos.
 """
+
+# Carga de Datos
 
 # Construccion de modelos
 
