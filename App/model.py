@@ -58,21 +58,16 @@ def newAnalyzer():
         }
 
         """
-        Se crea un mapa de los aeropuertos por IATA 
+        Se crea un arbol de los aeropuertos por IATA
         """
 
-        analyzer['IATA_Airport'] = mp.newMap(numelements=9076, 
-                                         maptype='CHAINING',
-                                         loadfactor=4.0,
-                                         comparefunction=compareAirportIDs)
+        analyzer['IATA_Airport'] = om.newMap(omaptype='RBT', comparefunction=compareString)
 
+        
         """
-        Se crea el mapa de los aeropuertos por nombre
+        Se crea un arbol de las ciudades
         """
-        analyzer['Name_Airport'] = mp.newMap(numelements=9076, 
-                                         maptype='CHAINING',
-                                         loadfactor=4.0,
-                                         comparefunction=compareAirportIDs)
+        analyzer['Cities'] = om.newMap(omaptype='RBT', comparefunction=compareString)
 
 
         """
@@ -95,10 +90,6 @@ def newAnalyzer():
                                               comparefunction=compareAirportIDs)
 
 
-        """
-        Se crea un mapa de las ciudades
-        """
-        analyzer['Cities'] = om.newMap(omaptype='RBT', comparefunction=compareString)
         
 
 
@@ -108,27 +99,42 @@ def newAnalyzer():
         error.reraise(exp, 'Error in model:newAnalyzer')
 
 
-# Funciones para agregar informacion a los  mapas
+# Funciones para agregar informacion a arboles 
 
 def addIATA_Airport(analyzer, airport):
     """
-    Se agrega al mapa de aeropuertos el key(IATA) y value(aeropuerto).
-    """
-    mp.put(analyzer['IATA_Airport'], airport['IATA'], airport)
-    return analyzer
+    Se toma el IATA del aeropuerto y se busca si ya existe 
+    en el arbol dicha ciudad. 
 
+    -Si se encuentra, se adiciona a su lista del IATA del aeropuerto.
+    -Si no se encuentra, crea un nodo para esa ciudad en el
+     arbol.
+    """
+    airiata = airport['IATA']
+    entry = om.get(analyzer['IATA_Airport'], airiata)
+    if entry is None:
+        iataentry = newAirport(airiata)
+        om.put(analyzer['IATA_Airport'], airiata, iataentry)
+    else:
+        entry = me.getValue(entry)
 
-def addName_Airport(analyzer, airport):
+    lt.addLast(iataentry['airport'], airport)
+
+def newAirport(airport):
     """
-    Se agrega al mapa de aeropuertos el key(Name) y value(IATA). Por si acaso
+    Crea una entrada en el indice por aeropuerto, es decir en el arbol
+    binario.
     """
-    mp.put(analyzer['Name_Airport'], airport['Name'], airport['IATA'])
-    return analyzer
+    entry = {'IATA': None, 'airport': None}
+    entry['IATA'] = airport
+    entry['airport'] = lt.newList('ARRAY_LIST')
+    return entry
+
 
 
 def AddCity(analyzer, city):
     """
-    Se toma la ciudad del avistamiento y se busca si ya existe 
+    Se toma la ciudad y se busca si ya existe 
     en el arbol dicha ciudad. 
 
     -Si se encuentra, se adiciona a su lista de la ciudad.
