@@ -112,7 +112,7 @@ def addIATA_Airport(analyzer, airport):
     Se toma el IATA del aeropuerto y se busca si ya existe 
     en el arbol dicha aeropuerto. 
 
-    -Si se encuentra, se adiciona a su lista del IATA del aeropuerto.
+    -Si se encuentra, se adiciona a su lista el aeropuerto.
     -Si no se encuentra, crea un nodo para esa ciudad en el
      arbol.
     """
@@ -139,18 +139,18 @@ def newAirport(airport):
 
 def addCity_Airport(analyzer, airport):
     """
-    Se toma el IATA del aeropuerto y se busca si ya existe 
+    Se toma el la ciudad del aeropuerto y se busca si ya existe 
     en el arbol dicha aeropuerto. 
 
-    -Si se encuentra, se adiciona a su lista del IATA del aeropuerto.
+    -Si se encuentra, se adiciona a la lista el nombre del aeropuerto.
     -Si no se encuentra, crea un nodo para esa ciudad en el
      arbol.
     """
     airiata = airport['City']
-    entry = om.get(analyzer['IATA_Airport'], airiata)
+    entry = om.get(analyzer['City_Airport'], airiata)
     if entry is None:
         iataentry = newCity_Airport(airiata)
-        om.put(analyzer['IATA_Airport'], airiata, iataentry)
+        om.put(analyzer['City_Airport'], airiata, iataentry)
     else:
         entry = me.getValue(entry)
 
