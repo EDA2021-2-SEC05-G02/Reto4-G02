@@ -63,6 +63,12 @@ def newAnalyzer():
 
         analyzer['IATA_Airport'] = om.newMap(omaptype='RBT', comparefunction=compareString)
 
+        """
+        Se crea un arbol de los aeropuertos pot la ciudad y su valor es el nombre del aeropuerto.
+        """
+
+        analyzer['City_Airport'] = om.newMap(omaptype='RBT', comparefunction=compareString)
+
         
         """
         Se crea un arbol de las ciudades
@@ -104,7 +110,7 @@ def newAnalyzer():
 def addIATA_Airport(analyzer, airport):
     """
     Se toma el IATA del aeropuerto y se busca si ya existe 
-    en el arbol dicha ciudad. 
+    en el arbol dicha aeropuerto. 
 
     -Si se encuentra, se adiciona a su lista del IATA del aeropuerto.
     -Si no se encuentra, crea un nodo para esa ciudad en el
@@ -118,16 +124,46 @@ def addIATA_Airport(analyzer, airport):
     else:
         entry = me.getValue(entry)
 
-    lt.addLast(iataentry['airport'], airport)
+    lt.addLast(iataentry['Airport'], airport)
 
 def newAirport(airport):
     """
     Crea una entrada en el indice por aeropuerto, es decir en el arbol
     binario.
     """
-    entry = {'IATA': None, 'airport': None}
+    entry = {'IATA': None, 'Airport': None}
     entry['IATA'] = airport
-    entry['airport'] = lt.newList('ARRAY_LIST')
+    entry['Airport'] = lt.newList('ARRAY_LIST')
+    return entry
+
+
+def addCity_Airport(analyzer, airport):
+    """
+    Se toma el IATA del aeropuerto y se busca si ya existe 
+    en el arbol dicha aeropuerto. 
+
+    -Si se encuentra, se adiciona a su lista del IATA del aeropuerto.
+    -Si no se encuentra, crea un nodo para esa ciudad en el
+     arbol.
+    """
+    airiata = airport['City']
+    entry = om.get(analyzer['IATA_Airport'], airiata)
+    if entry is None:
+        iataentry = newCity_Airport(airiata)
+        om.put(analyzer['IATA_Airport'], airiata, iataentry)
+    else:
+        entry = me.getValue(entry)
+
+    lt.addLast(iataentry['Airport'], airport['Name'])
+
+def newCity_Airport(city):
+    """
+    Crea una entrada en el indice por aeropuerto, es decir en el arbol
+    binario.
+    """
+    entry = {'City': None, 'Airport': None}
+    entry['City'] = city
+    entry['Airport'] = lt.newList('ARRAY_LIST')
     return entry
 
 
