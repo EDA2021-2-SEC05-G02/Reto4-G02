@@ -323,18 +323,6 @@ def compareAirportIDs(iatacode , airport):
     else:
         return -1
 
-def compareCities(city1 , city2):
-    """
-    Compara dos ciudades
-    """
-    citykey = me.getKey(city2)
-    if (city1 == citykey):
-        return 0
-    elif (city1 > citykey):
-        return 1
-    else:
-        return -1
-
 def compareroutes(route1, route2):
     """
     Compara dos rutas
