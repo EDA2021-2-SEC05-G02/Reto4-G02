@@ -67,7 +67,11 @@ cont = None #catalog
 
 def LoadData(cont):
     print("Cargando información de los aeropuertos ....")
-    controller.loadData(cont)
+    loadData = controller.loadData(cont)
+    
+    print('El primer aeropuerto cargado del grafo no dirgido es')
+    printFirstAirport(loadData)
+
     data = controller.FirstAirportandLastCity()
     print('El primer aeropuerto cargado del grafo dirgido es')
     printFirstAirport(data[0])
@@ -82,8 +86,14 @@ def LoadData(cont):
     print('Numero de rutas aereas del grafo no dirigido: ' + str(numedges[1]))
     print('El total de ciudades es: ' + str(CitySize))
 
+def printFirstAirport(airport):
+   x = PrettyTable(hrules=prettytable.ALL)
+   x.field_names = ["IATA", "Name", "City", "Country", "Latitude", "Longitude"]
+   x.add_row([airport['IATA'], airport['Name'], airport['City'], airport['Country'], airport['Latitude'], airport['Longitude']])
+   print(x)
 
-def Requerimiento2(cont):
+
+def Req2(cont):
     air1 = input('Ingrese el IATA del aeropuerto 1: ')
     air2 = input('Ingrese el IATA del aeropuerto 2: ')
     airport = controller.AirCluster(cont, air1, air2)
@@ -109,12 +119,12 @@ def run():
 
         elif int(inputs[0]) == 2:
             LoadData(cont)
-    
+            
         elif int(inputs[0]) == 3:
             pass
 
         elif int(inputs[0]) == 4:
-            Requerimiento2(cont)
+            Req2(cont)
 
         elif int(inputs[0]) == 5:
             pass

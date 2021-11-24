@@ -28,22 +28,6 @@ import prettytable
 from prettytable import PrettyTable
 from DISClib.ADT import list as lt
 
-
-def printFirstAirport(airport):
-   x = PrettyTable(hrules=prettytable.ALL)
-   x.field_names = ["IATA", "Name", "City", "Country", "Latitude", "Longitude"]
-   x.add_row([airport['IATA'], airport['Name'], airport['City'], airport['Country'], airport['Latitude'], airport['Longitude']])
-   print(x)
-
-def printLastCity(city):
-   x = PrettyTable(hrules=prettytable.ALL)
-   x.field_names = ['City', 'population', 'lat', 'lng']
-   x.add_row([city['city_ascii'], city['population'], city['lat'], city['lng']])
-   print(x)
-
-
-
-
 """
 El controlador se encarga de mediar entre la vista y el modelo.
 """
@@ -68,16 +52,14 @@ def loadData(analyzer):
 
     # Carga de datos de rutas
     routes = loadRoutes(analyzer)
-    print('El primer aeropuerto cargado del grafo no dirgido es')
-    printFirstAirport(routes[1])
+
+    firstAirport = routes[1]
 
     # Carga de datos de ciudades
     LoadWorldCities(analyzer)
     Kosajaru(analyzer)
-
     
-
-
+    return firstAirport
 
 def loadAirports(analyzer):
     airportfile = cf.data_dir + "airports_full.csv"
