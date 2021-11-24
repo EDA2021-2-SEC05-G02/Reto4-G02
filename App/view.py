@@ -63,7 +63,7 @@ def printMenu():
     print("8- (Bono) Comparar con servicio WEB externo")
     print("9- Salir")
 
-catalog = None
+cont = None #catalog
 
 def LoadData(cont):
     print("Cargando información de los aeropuertos ....")
