@@ -133,7 +133,11 @@ def AddCity(analyzer, city):
     """
     Se agrega al mapa de ciudades el key(City) y value(city).
     """
-    mp.put(analyzer['Cities'], city['city_ascii'], city)
+    entry = mp.get(analyzer['Cities'], city['city_ascii'])
+    if entry is None:
+        citylist = lt.newList('ARRAY_LIST')
+        lt.addLast(citylist, city)
+        mp.put(analyzer['Cities'], city['city_ascii'], citylist)
     return analyzer
 
 # Funciones para agregar informacion grafos
