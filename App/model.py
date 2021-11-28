@@ -80,6 +80,11 @@ def newAnalyzer():
                                               size=92606,
                                               comparefunction=compareAirportIDs)
 
+        analyzer['ac'] = gr.newGraph(datastructure='ADJ_LIST',
+                                              directed=True,
+                                              size=92606,
+                                              comparefunction=compareAirportIDs)
+
         """
         Se crea un grafo no dirigido de las conexiones de las rutas
         """
@@ -147,6 +152,11 @@ def addVertex(analyzer, airport):
     try: 
         if not gr.containsVertex(analyzer['connections'], airport['IATA']):
             gr.insertVertex(analyzer['connections'], airport['IATA'])
+
+        if not gr.containsVertex(analyzer['ac'], airport['IATA']):
+            gr.insertVertex(analyzer['ac'], airport['IATA'])
+
+
         return analyzer
 
     except Exception as exp:
@@ -161,6 +171,10 @@ def AddConnections(analyzer, routes):
     edge = gr.getEdge(analyzer['connections'], routes['Departure'], routes['Destination'])
     if edge is None:
         gr.addEdge(analyzer['connections'], routes['Departure'], routes['Destination'], routes['distance_km'])
+
+    arrive = gr.getEdge(analyzer['ac'], routes['Destination'], routes['Departure'])
+    if arrive is None:
+        gr.addEdge(analyzer['ac'], routes['Destination'], routes['Departure'], routes['distance_km'])
 
     edgeDestinationtoDeparture = gr.getEdge(analyzer['connections'], routes['Destination'], routes['Departure'])
     
