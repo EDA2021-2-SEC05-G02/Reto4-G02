@@ -32,18 +32,6 @@ import prettytable
 from prettytable import PrettyTable
 assert cf
 
-def printFirstAirport(airport):
-   x = PrettyTable(hrules=prettytable.ALL)
-   x.field_names = ["IATA", "Name", "City", "Country", "Latitude", "Longitude"]
-   x.add_row([airport['IATA'], airport['Name'], airport['City'], airport['Country'], airport['Latitude'], airport['Longitude']])
-   print(x)
-
-def printLastCity(city):
-   x = PrettyTable(hrules=prettytable.ALL)
-   x.field_names = ['City', 'population', 'lat', 'lng']
-   x.add_row([city['city_ascii'], city['population'], city['lat'], city['lng']])
-   print(x)
-
 """
 La vista se encarga de la interacción con el usuario
 Presenta el menu de opciones y por cada seleccion
@@ -61,9 +49,27 @@ def printMenu():
     print("6- (Req 4) Utilizar las millas de viajero")
     print("7- (Req 5) Cuantificar el efecto de un aeropuerto cerrado")
     print("8- (Bono) Comparar con servicio WEB externo")
-    print("9- Salir")
+    print("9- (Bono) Visualizar gráficamente los requerimientos")
+    print("0- Salir")
 
-cont = None #catalog
+def printLastCity(city):
+   x = PrettyTable(hrules=prettytable.ALL)
+   x.field_names = ['City', 'population', 'lat', 'lng']
+   x.add_row([city['city_ascii'], city['population'], city['lat'], city['lng']])
+   print(x)
+
+def printFirstAirport(airport):
+   x = PrettyTable(hrules=prettytable.ALL)
+   x.field_names = ["IATA", "Name", "City", "Country", "Latitude", "Longitude"]
+   x.add_row([airport['IATA'], airport['Name'], airport['City'], airport['Country'], airport['Latitude'], airport['Longitude']])
+   print(x)
+
+def printAirports(airports):
+   x = PrettyTable(hrules=prettytable.ALL)
+   x.field_names = ["IATA", "Name", "City", "Country", "Latitude", "Longitude"]
+   for airport in lt.iterator(airports):
+        x.add_row([airport['IATA'], airport['Name'], airport['City'], airport['Country'], airport['Latitude'], airport['Longitude']])
+   print(x)
 
 def LoadData(cont):
     print("Cargando información de los aeropuertos ....")
@@ -86,12 +92,8 @@ def LoadData(cont):
     print('Numero de rutas aereas del grafo no dirigido: ' + str(numedges[1]))
     print('El total de ciudades es: ' + str(CitySize))
 
-def printFirstAirport(airport):
-   x = PrettyTable(hrules=prettytable.ALL)
-   x.field_names = ["IATA", "Name", "City", "Country", "Latitude", "Longitude"]
-   x.add_row([airport['IATA'], airport['Name'], airport['City'], airport['Country'], airport['Latitude'], airport['Longitude']])
-   print(x)
-
+def Req1(cont):
+ pass
 
 def Req2(cont):
     air1 = input('Ingrese el IATA del aeropuerto 1: ')
@@ -104,9 +106,31 @@ def Req2(cont):
 
     print('El total de clusteres presentes en la red de transporte aereo son: ' + str(airport[0]))
 
+def Req3(cont):
+ pass
+
+def Req4(cont):
+ pass
+
+def Req5(cont):
+    airIata = input('Ingrese el IATA del aeropuerto fuera de servicio: ')
+    affected = controller.OutOfService(cont, airIata)
+    print("="*15, " Req No. 5 Inputs ", "="*15)
+    print("Check how many airports are affected if the airport with IATA" ,airIata,  "stops working\n")
+    print("="*15, " Req No. 5 Answer ", "="*15)
+    print("There are" ,lt.size(affected), "airports affected if the airport with IATA" ,airIata, "stops working\n")
+    if lt.size(affected) != 0:
+        print("The affected airports are:")
+        printAirports(affected)
 
 
+def Req6Bono(cont):
+ pass
 
+def Req7Bono(cont):
+ pass
+
+cont = None #catalog
 """
 Menu principal
 """
@@ -133,9 +157,12 @@ def run():
             pass
 
         elif int(inputs[0]) == 7:
-            pass
+            Req5(cont)
 
         elif int(inputs[0]) == 8:
+            pass
+        
+        elif int(inputs[0]) == 9:
             pass
 
         else:

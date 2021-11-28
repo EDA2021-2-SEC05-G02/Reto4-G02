@@ -156,6 +156,12 @@ def Kosaraju(analyzer):
     """
     return model.Kosaraju(analyzer)
 
+def OutOfService(analyzer, airIata):
+    """
+    Req 5
+    """
+    return model.OutOfService(analyzer, airIata)
+
 
 # Funciones de ordenamiento
 

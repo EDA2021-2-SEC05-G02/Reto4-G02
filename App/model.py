@@ -230,9 +230,7 @@ def CitySize(analyzer):
 # Requerimientos
 
 #! Req 1
-
 def AirInterconection(analyzer):
-
     """
     Retorna la lista de aeropuertos que tienen interconexiones entre ellos en cada uno de los grafos y el total de conexiones
     """
@@ -240,7 +238,6 @@ def AirInterconection(analyzer):
     pass
 
 #! Req 2
-
 def AirCluster(analyzer, vertexA, vertexB):
     """
     Retorna el total de clusters presentes en la red de aeropuertos y devuelve un valor booleano si los dos aeropuertos estan en el mismo cluster.
@@ -248,6 +245,23 @@ def AirCluster(analyzer, vertexA, vertexB):
     total = scc.connectedComponents(analyzer['components'])
     samecluster =  scc.stronglyConnected(analyzer['components'], vertexA, vertexB)    
     return total, samecluster
+
+#! Req 3
+
+#! Req 4
+
+#! Req 5
+def OutOfService(analyzer, airIata):
+    grafo = analyzer['connections']
+    airportsInfo = analyzer['IATA_Airport']
+    adjacents = gr.adjacents(grafo,airIata)
+    affected = lt.newList('ARRAY_LIST')
+    for iata in lt.iterator(adjacents):
+        info = om.get(airportsInfo, iata)['value']
+        lt.addLast(affected, info)
+    return affected
+
+
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
@@ -284,12 +298,6 @@ def compareString(str1, str2):
         return 1
     else:
         return -1
-
-
-
-
-
-
 
 
 # Funciones de ordenamiento
