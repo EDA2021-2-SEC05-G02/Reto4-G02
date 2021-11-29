@@ -170,11 +170,11 @@ def Req7Bono(cont):
                 <tr>
                     <td>Longitude</td>
                     <td>{Longitude}</td>
-                    </tr>
+                </tr>
             </table>
             """
             .format(**row), script=True),  
-            min_width=200, max_width=200), icon=folium.Icon(color='green')).add_to(mapa), axis=1)
+            min_width=300, max_width=300), icon=folium.Icon(color='purple')).add_to(mapa), axis=1)
 
     mapa.save('mapa.html')
     webbrowser.open('mapa.html')
