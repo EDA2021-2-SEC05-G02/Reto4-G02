@@ -32,6 +32,7 @@ import prettytable
 from prettytable import PrettyTable
 import pandas as pd
 import folium
+import webbrowser
 assert cf
 
 """
@@ -176,6 +177,8 @@ def Req7Bono(cont):
             min_width=200, max_width=200), icon=folium.Icon(color='green')).add_to(mapa), axis=1)
 
     mapa.save('mapa.html')
+    webbrowser.open('mapa.html')
+
 
 
 
