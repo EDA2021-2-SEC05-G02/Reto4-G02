@@ -80,7 +80,7 @@ def newAnalyzer():
                                               size=92606,
                                               comparefunction=compareAirportIDs)
 
-        analyzer['ac'] = gr.newGraph(datastructure='ADJ_LIST',
+        analyzer['reverse connections'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=True,
                                               size=92606,
                                               comparefunction=compareAirportIDs)
@@ -153,8 +153,8 @@ def addVertex(analyzer, airport):
         if not gr.containsVertex(analyzer['connections'], airport['IATA']):
             gr.insertVertex(analyzer['connections'], airport['IATA'])
 
-        if not gr.containsVertex(analyzer['ac'], airport['IATA']):
-            gr.insertVertex(analyzer['ac'], airport['IATA'])
+        if not gr.containsVertex(analyzer['reverse connections'], airport['IATA']):
+            gr.insertVertex(analyzer['reverse connections'], airport['IATA'])
 
 
         return analyzer
@@ -172,9 +172,9 @@ def AddConnections(analyzer, routes):
     if edge is None:
         gr.addEdge(analyzer['connections'], routes['Departure'], routes['Destination'], routes['distance_km'])
 
-    arrive = gr.getEdge(analyzer['ac'], routes['Destination'], routes['Departure'])
+    arrive = gr.getEdge(analyzer['reverse connections'], routes['Destination'], routes['Departure'])
     if arrive is None:
-        gr.addEdge(analyzer['ac'], routes['Destination'], routes['Departure'], routes['distance_km'])
+        gr.addEdge(analyzer['reverse connections'], routes['Destination'], routes['Departure'], routes['distance_km'])
 
     edgeDestinationtoDeparture = gr.getEdge(analyzer['connections'], routes['Destination'], routes['Departure'])
     
@@ -267,12 +267,20 @@ def AirCluster(analyzer, vertexA, vertexB):
 #! Req 5
 def OutOfService(analyzer, airIata):
     grafo = analyzer['connections']
-    airportsInfo = analyzer['IATA_Airport']
     adjacents = gr.adjacents(grafo,airIata)
+    reverse = analyzer['reverse connections']
+    reverse_adj = gr.adjacents(reverse,airIata)
+    airportsInfo = analyzer['IATA_Airport']
     affected = lt.newList('ARRAY_LIST')
+
     for iata in lt.iterator(adjacents):
         info = om.get(airportsInfo, iata)['value']
         lt.addLast(affected, info)
+
+    for iata in lt.iterator(reverse_adj):
+        if not lt.isPresent(adjacents, iata):
+            info = om.get(airportsInfo, iata)['value']
+            lt.addLast(affected, info)  
     return affected
 
 
