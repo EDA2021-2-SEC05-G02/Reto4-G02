@@ -279,12 +279,10 @@ def AirCluster(analyzer, vertexA, vertexB):
 
 #! Req 3
 def SearchCity(analyzer, city):
-    lista = lt.newList('ARRAY_LIST')
     cities = mp.get(analyzer['cities'], city)
     if cities:
         value = me.getValue(cities)['valor']
-        lt.addLast(lista, value)
-    return lista
+    return value
 
 #! Req 4
 
