@@ -309,6 +309,7 @@ def OutOfService(analyzer, airIata):
     return affected
 
 
+
 #! Req 6
 
 
