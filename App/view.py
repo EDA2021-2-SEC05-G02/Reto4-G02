@@ -30,9 +30,6 @@ import controller
 from DISClib.ADT import list as lt
 import prettytable 
 from prettytable import PrettyTable
-import pandas as pd
-import folium
-import webbrowser
 assert cf
 
 """
@@ -137,52 +134,9 @@ def Req6Bono(cont):
 def Req7Bono(cont):
     airIata = input('Ingrese el IATA del aeropuerto fuera de servicio: ')
     affected = controller.OutOfService(cont, airIata)
-    df = pd.DataFrame(columns=['IATA', 'Name', 'City', 'Country', 'Latitude', 'Longitude'])
-    for airport in lt.iterator(affected):
-        df.loc[len(df)] = [airport['IATA'], airport['Name'], airport['City'], airport['Country'], airport['Latitude'], airport['Longitude']]
-        
-    mapa = folium.Map(location=[45.5236, -122.6750])
-    df.apply(lambda row:folium.Marker(location=[row["Latitude"], row["Longitude"]], 
-            radius=10,Tooltip="Click me!", popup=folium.Popup(folium.Html(
-            """
-            <link href="style.css" rel="stylesheet" type="text/css">
-            <table>
-                <tr>
-                    <th>Airport</th>
-                    <th>Information</th>
-                </tr>
-                <tr>
-                    <td>IATA</td>
-                    <td>{IATA}</td>
-                </tr>
-                <tr>
-                    <td>Name</td>
-                    <td>{Name}</td>
-                </tr>
-                <tr>
-                    <td>City</td>
-                    <td>{City}</td>
-                </tr>
-                <tr>
-                    <td>Country</td>
-                    <td>{Country}</td>
-                </tr>
-                <tr>
-                    <td>Latitude</td>
-                    <td>{Latitude}</td>
-                </tr>
-                <tr>
-                    <td>Longitude</td>
-                    <td>{Longitude}</td>
-                </tr>
-            </table>
-            """
-            .format(**row), script=True),  
-            min_width=300, max_width=300), icon=folium.Icon(color='purple')).add_to(mapa), axis=1)
+    controller.Mapa(affected)
 
-    mapa.save('mapa.html')
-    webbrowser.open('mapa.html')
-
+    
 
 
 

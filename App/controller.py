@@ -112,6 +112,7 @@ def FirstAirportandLastCity():
     
 
 
+
 def SearchCity(analyzer, city):
     return model.SearchCity(analyzer, city)
 
@@ -159,6 +160,13 @@ def OutOfService(analyzer, airIata):
     Req 5
     """
     return model.OutOfService(analyzer, airIata)
+
+
+def Mapa(info):
+    """
+    Req 7
+    """
+    return model.Mapa(info)
 
 
 # Funciones de ordenamiento

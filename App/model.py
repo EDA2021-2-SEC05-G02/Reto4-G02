@@ -36,6 +36,9 @@ from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.Utils import error as error
 assert cf
+import pandas as pd
+import folium
+import webbrowser
 
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
@@ -255,17 +258,6 @@ def CitySize(analyzer):
     size = lt.size(llaves)
     return size
 
-def SearchCity(analyzer, city):
-    lista = lt.newList('ARRAY_LIST')
-    cities = mp.get(analyzer['cities'], city)
-    if cities:
-        value = me.getValue(cities)['valor']
-        lt.addLast(lista, value)
-
-
-    return lista
-
-
 # Requerimientos
 
 #! Req 1
@@ -286,6 +278,13 @@ def AirCluster(analyzer, vertexA, vertexB):
     return total, samecluster
 
 #! Req 3
+def SearchCity(analyzer, city):
+    lista = lt.newList('ARRAY_LIST')
+    cities = mp.get(analyzer['cities'], city)
+    if cities:
+        value = me.getValue(cities)['valor']
+        lt.addLast(lista, value)
+    return lista
 
 #! Req 4
 
@@ -307,6 +306,59 @@ def OutOfService(analyzer, airIata):
             info = om.get(airportsInfo, iata)['value']
             lt.addLast(affected, info)  
     return affected
+
+
+#! Req 6
+
+
+#! Req 7
+
+def Mapa(info):
+    df = pd.DataFrame(columns=['IATA', 'Name', 'City', 'Country', 'Latitude', 'Longitude'])
+    for airport in lt.iterator(info):
+        df.loc[len(df)] = [airport['IATA'], airport['Name'], airport['City'], airport['Country'], airport['Latitude'], airport['Longitude']]
+        
+    mapa = folium.Map(location=[45.5236, -122.6750])
+    df.apply(lambda row:folium.Marker(location=[row["Latitude"], row["Longitude"]], 
+            radius=10,Tooltip="Click me!", popup=folium.Popup(folium.Html(
+            """
+            <link href="style.css" rel="stylesheet" type="text/css">
+            <table>
+                <tr>
+                    <th>Airport</th>
+                    <th>Information</th>
+                </tr>
+                <tr>
+                    <td>IATA</td>
+                    <td>{IATA}</td>
+                </tr>
+                <tr>
+                    <td>Name</td>
+                    <td>{Name}</td>
+                </tr>
+                <tr>
+                    <td>City</td>
+                    <td>{City}</td>
+                </tr>
+                <tr>
+                    <td>Country</td>
+                    <td>{Country}</td>
+                </tr>
+                <tr>
+                    <td>Latitude</td>
+                    <td>{Latitude}</td>
+                </tr>
+                <tr>
+                    <td>Longitude</td>
+                    <td>{Longitude}</td>
+                </tr>
+            </table>
+            """
+            .format(**row), script=True),  
+            min_width=300, max_width=300), icon=folium.Icon(color='purple')).add_to(mapa), axis=1)
+
+    mapa.save('mapa.html')
+    webbrowser.open('mapa.html')
 
 
 
