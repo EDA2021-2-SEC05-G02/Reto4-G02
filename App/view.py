@@ -126,21 +126,6 @@ def Req2(cont):
 
     print('El total de clusteres presentes en la red de transporte aereo son: ' + str(airport[0]))
 
-
-    #---------
-
-    print()
-    airport = controller.AirCluster2(cont, air1, air2)
-    if airport[1]:
-        print('Los aeropuertos con identificador(IATA) ' + air1 + ' y ' + air2 + ' estan en el mismo cluster.')
-    else:
-        print('Los aeropuertos con identificador(IATA) ' + air1 + ' y ' + air2 + ' no estan en el mismo cluster.')
-
-    print('El total de clusteres presentes en la red de transporte aereo son: ' + str(airport[0]))
-
-
-
-
 def Req3(cont):
     ori_city = input('Ingrese la ciudad de origen: ')
     ori_cities = controller.SearchCity(cont, ori_city.lower())
@@ -156,7 +141,6 @@ def Req3(cont):
         printCitiesSameName(dest_cities)
         num_destcity = input("Seleccione el numero de la ciudad que quiere consultar: ")
  
-
 def Req4(cont):
     pass
 
@@ -179,7 +163,6 @@ def Req7Bono(cont):
     affected = controller.OutOfService(cont, airIata)
     controller.Mapa(affected)
 
-    
 cont = None #catalog
 """
 Menu principal
