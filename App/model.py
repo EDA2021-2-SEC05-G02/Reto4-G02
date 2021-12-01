@@ -35,6 +35,7 @@ from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.Utils import error as error
+from DISClib.Algorithms.Sorting import mergesort as mer
 assert cf
 import pandas as pd
 import folium
@@ -54,11 +55,7 @@ def newAnalyzer():
     Inicializa el analizador 
     """
     try:
-        analyzer = {
-        'connections': None,
-        'onlyroute': None,
-        'paths': None,
-        }
+        analyzer = {}
 
         """
         Se crea un arbol de los aeropuertos por IATA
@@ -100,25 +97,14 @@ def newAnalyzer():
                                               size=92606,
                                               comparefunction=compareAirportIDs)
 
-
-        
-
-
         return analyzer
         
     except Exception as exp:
         error.reraise(exp, 'Error in model:newAnalyzer')
 
-
-
-
-
-
-
 # Funciones para agregar informacion a los mapas
 
 def addCity(analyzer, city):
-     
     info = {}
     info['city_ascii'] = city['city_ascii']
     info['lat'] = city['lat']
@@ -148,7 +134,6 @@ def newCity(city):
     entry['valor'] = lt.newList('ARRAY_LIST')
     return entry
 
-
 # Funciones para agregar informacion a arboles 
 
 def addIATA_Airport(analyzer, airport):
@@ -157,15 +142,11 @@ def addIATA_Airport(analyzer, airport):
     """
     om.put(analyzer['IATA_Airport'], airport['IATA'], airport)
 
-
-
-
 # Funciones para agregar informacion grafos
 
 def addVertex(analyzer, airport):
     """
     Adiciona identificador IATA del aeropuerto como vertice del grafo
-
     """
     try: 
         if not gr.containsVertex(analyzer['connections'], airport['IATA']):
@@ -180,11 +161,9 @@ def addVertex(analyzer, airport):
     except Exception as exp:
         error.reraise(exp, 'Error in model:addAirport')
 
-
 def AddConnections(analyzer, routes):
     """
     Adiciona un arco entre dos aeropuertos.
-
     """
     edge = gr.getEdge(analyzer['connections'], routes['Departure'], routes['Destination'])
     if edge is None:
@@ -196,13 +175,10 @@ def AddConnections(analyzer, routes):
 
     edgeDestinationtoDeparture = gr.getEdge(analyzer['connections'], routes['Destination'], routes['Departure'])
     
-
     """
     Si el arco de destino a origen del grafo dirigido no esta vacio, se agregan los vertices de destino y origen al grafo no dirigido.
     Si el arco de destino a origen del grafo no dirigido esta vacio, se agrega el arco de destino a origen junto con el peso.
-
     """
-
     if edgeDestinationtoDeparture is not None:
         # Si no se contiene el vertice de destination en el grafo no dirigido, se agrega
         if not gr.containsVertex(analyzer['onlyroute'], routes['Destination']):
@@ -218,7 +194,6 @@ def AddConnections(analyzer, routes):
 
     return analyzer, edgeDestinationtoDeparture is not None
 
-
 # Funciones de consulta
 
 def Kosajaru(analyzer):
@@ -227,13 +202,11 @@ def Kosajaru(analyzer):
     """
     analyzer['components'] = scc.KosarajuSCC(analyzer['connections'])
 
-
 def SearchbyIATA(analyzer, IATA):
     """
     Buscar aeropuerto por IATA y saca el valor
     """        
     return me.getValue(om.get(analyzer['IATA_Airport'], IATA))
-
 
 def totalAirperGraph(analyzer):
     """
@@ -251,7 +224,6 @@ def totalConnectionsperGraph(analyzer):
     onlyroute = gr.numEdges(analyzer['onlyroute'])
     return conections, onlyroute
 
-
 def CitySize(analyzer):
     """
     Retorna el tamaño del mapa de ciudades
@@ -260,23 +232,54 @@ def CitySize(analyzer):
     size = lt.size(llaves)
     return size
 
-# Requerimientos
+def getFirst(lista, num):
+    """
+    Retorna los primeros num elementos de una lista
+    """
+    lista = lt.subList(lista, 1, num)
+    return lista
 
+def getLast(lista, num):
+    """
+    Retorna los ultimos num elementos de una lista
+    """
+    lista = lt.subList(lista, lt.size(lista)-(num-1), num)
+    return lista
+
+def FirtsAndLast(primeros, ultimos):
+    for item in lt.iterator(ultimos):
+        lt.addLast(primeros, item)
+    return primeros
+
+# Requerimientos
 #! Req 1
 def AirInterconection(analyzer):
     """
     Retorna la lista de aeropuertos que tienen interconexiones entre ellos en cada uno de los grafos y el total de conexiones
     """
+    interconnections=lt.newList(datastructure="ARRAY_LIST")
+    vertices= gr.vertices(analyzer['connections'])
+    for vertex in lt.iterator(vertices):
+        num_connections = gr.indegree(analyzer['connections'],vertex) + gr.outdegree(analyzer['connections'],vertex)
+        if num_connections == 0:
+            continue
+        airport=om.get(analyzer['IATA_Airport'], vertex)['value']
+        info={'Airport':vertex,
+              'Interconnections': num_connections,
+              'Name':airport['Name'],
+              'City':airport['City'],
+              'Country': airport['Country']}
+        lt.addLast(interconnections,info)
+    mer.sort(interconnections, cmpInterconnections)
+    return interconnections
     
-    pass
-
 #! Req 2
 def AirCluster(analyzer, vertexA, vertexB):
     """
     Retorna el total de clusters presentes en la red de aeropuertos y devuelve un valor booleano si los dos aeropuertos estan en el mismo cluster.
-    """
+    """    
     total = scc.connectedComponents(analyzer['components'])
-    samecluster =  scc.stronglyConnected(analyzer['components'], vertexA, vertexB)    
+    samecluster =  scc.stronglyConnected(analyzer['components'], vertexA, vertexB)  
     return total, samecluster
 
 #! Req 3
@@ -308,13 +311,9 @@ def OutOfService(analyzer, airIata):
             lt.addLast(affected, info)  
     return affected
 
-
-
 #! Req 6
 
-
 #! Req 7
-
 def Mapa(info):
     df = pd.DataFrame(columns=['IATA', 'Name', 'City', 'Country', 'Latitude', 'Longitude'])
     for airport in lt.iterator(info):
@@ -362,8 +361,6 @@ def Mapa(info):
     mapa.save('mapa.html')
     webbrowser.open('mapa.html')
 
-
-
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 def compareAirportIDs(iatacode , airport):
@@ -409,5 +406,7 @@ def compareString(str1, str2):
     else:
         return -1
 
+def cmpInterconnections (a1,a2):
+    return a1['Interconnections']>a2['Interconnections']
 
 # Funciones de ordenamiento

@@ -109,12 +109,25 @@ def FirstAirportandLastCity():
 
     firstairport = next(input_file)
     return firstairport, lastcity
-    
 
+# Funciones de ordenamiento
 
+# Funciones de consulta sobre el catálogo
 
-def SearchCity(analyzer, city):
-    return model.SearchCity(analyzer, city)
+def getLast(lista, num):
+    """
+    Retorna los ultimos 'num' elementos de una lista.
+    """
+    return model.getLast(lista, num)
+
+def getFirst(lista, num):
+    """
+    Retorna los primeros 'num' elementos de una lista.
+    """
+    return model.getFirst(lista, num)
+
+def FirtsAndLast(primeros, ultimos):
+    return model.FirtsAndLast(primeros, ultimos)
 
 def totalAirperGraph(analyzer):
     """
@@ -122,20 +135,11 @@ def totalAirperGraph(analyzer):
     """
     return model.totalAirperGraph(analyzer)
 
-
 def totalConnectionsperGraph(analyzer):
     """
     Total de enlaces entre las paradas
     """
     return model.totalConnectionsperGraph(analyzer)
-
-
-def AirCluster(analyzer,vertexA, vertexB):
-    """
-    Numero de componentes fuertemente conectados
-    """
-    return model.AirCluster(analyzer,  vertexA, vertexB)
-
 
 def getFistAirportperGraph(analyzer):
     """
@@ -155,20 +159,35 @@ def Kosaraju(analyzer):
     """
     return model.Kosaraju(analyzer)
 
+#Requerimientos
+
+def AirInterconection (analyzer):
+    """
+    Req 1
+    """
+    return model.AirInterconection(analyzer)
+
+def AirCluster(analyzer,vertexA, vertexB):
+    """
+    Req 2
+    Numero de componentes fuertemente conectados
+    """
+    return model.AirCluster(analyzer,  vertexA, vertexB)
+
+def SearchCity(analyzer, city):
+    """
+    Req 3
+    """
+    return model.SearchCity(analyzer, city)
+
 def OutOfService(analyzer, airIata):
     """
     Req 5
     """
     return model.OutOfService(analyzer, airIata)
 
-
 def Mapa(info):
     """
     Req 7
     """
     return model.Mapa(info)
-
-
-# Funciones de ordenamiento
-
-# Funciones de consulta sobre el catálogo

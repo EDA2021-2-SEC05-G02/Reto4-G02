@@ -79,6 +79,15 @@ def printCitiesSameName (cities):
        x.add_row([i, city['city_ascii'], city['population'], city['lat'], city['lng'], city['country'], city['admin_name']])
    print(x)
 
+def printAirInterconection(airport):
+   x = PrettyTable(hrules=prettytable.ALL)
+   x.field_names = ['IATA', '# Interconnections', 'Airport (Name)', 'City', 'Country']
+   for air in lt.iterator(airport):
+       x.add_row([air['Airport'], air['Interconnections'], air['Name'], air['City'], air['Country']])
+   print(x)
+
+
+
 def LoadData(cont):
     print("Cargando información de los aeropuertos ....")
     loadData = controller.loadData(cont)
@@ -101,11 +110,14 @@ def LoadData(cont):
     print('El total de ciudades es: ' + str(CitySize))
 
 def Req1(cont):
-    pass
+    airports=controller.AirInterconection(cont)
+    print('El numero de aeropuertos interconectados es de: ',lt.size(airports))
+    top5 = controller.getFirst(airports, 5)
+    printAirInterconection(top5)
 
 def Req2(cont):
-    air1 = input('Ingrese el IATA del aeropuerto 1: ')
-    air2 = input('Ingrese el IATA del aeropuerto 2: ')
+    air1 = input('Ingrese el IATA del aeropuerto 1: ').upper()
+    air2 = input('Ingrese el IATA del aeropuerto 2: ').upper()
     airport = controller.AirCluster(cont, air1, air2)
     if airport[1]:
         print('Los aeropuertos con identificador(IATA) ' + air1 + ' y ' + air2 + ' estan en el mismo cluster.')
@@ -113,6 +125,21 @@ def Req2(cont):
         print('Los aeropuertos con identificador(IATA) ' + air1 + ' y ' + air2 + ' no estan en el mismo cluster.')
 
     print('El total de clusteres presentes en la red de transporte aereo son: ' + str(airport[0]))
+
+
+    #---------
+
+    print()
+    airport = controller.AirCluster2(cont, air1, air2)
+    if airport[1]:
+        print('Los aeropuertos con identificador(IATA) ' + air1 + ' y ' + air2 + ' estan en el mismo cluster.')
+    else:
+        print('Los aeropuertos con identificador(IATA) ' + air1 + ' y ' + air2 + ' no estan en el mismo cluster.')
+
+    print('El total de clusteres presentes en la red de transporte aereo son: ' + str(airport[0]))
+
+
+
 
 def Req3(cont):
     ori_city = input('Ingrese la ciudad de origen: ')
@@ -131,7 +158,7 @@ def Req3(cont):
  
 
 def Req4(cont):
- pass
+    pass
 
 def Req5(cont):
     airIata = input('Ingrese el IATA del aeropuerto fuera de servicio: ')
@@ -145,7 +172,7 @@ def Req5(cont):
         printAirports(affected)
 
 def Req6Bono(cont):
- pass
+    pass
 
 def Req7Bono(cont):
     airIata = input('Ingrese el IATA del aeropuerto fuera de servicio: ')
@@ -166,7 +193,7 @@ def run():
             LoadData(cont)
             
         elif int(inputs[0]) == 2:
-             pass
+            Req1(cont)
 
         elif int(inputs[0]) == 3:
             Req2(cont)
@@ -175,13 +202,13 @@ def run():
             Req3(cont)
 
         elif int(inputs[0]) == 5:
-            pass
+            Req4(cont)
 
         elif int(inputs[0]) == 6:
             Req5(cont)
 
         elif int(inputs[0]) == 7:
-            pass
+            Req6Bono(cont)
         
         elif int(inputs[0]) == 8:
             Req7Bono(cont)
