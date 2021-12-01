@@ -71,6 +71,16 @@ def printAirports(airports):
         x.add_row([airport['IATA'], airport['Name'], airport['City'], airport['Country'], airport['Latitude'], airport['Longitude']])
    print(x)
 
+def printCity(cities):
+    x = PrettyTable(hrules=prettytable.ALL)
+    x.field_names = ['ID','City', 'Latitude', 'Longitude', 'Country']
+    pos = 0
+    for city in lt.iterator(cities):
+        pos += 1
+        x.add_row([pos,city['city_ascii'], city['lat'], city['lng'], city['country']])
+    print(x)
+
+
 def LoadData(cont):
     print("Cargando información de los aeropuertos ....")
     loadData = controller.loadData(cont)
@@ -109,8 +119,7 @@ def Req2(cont):
 def Req3(cont):
     city = input('Ingrese la ciudad: ')
     cities = controller.SearchCity(cont, city)
-    for cit in lt.iterator(cities):
-        print(cit)
+    printCity(cities)
  
 
 def Req4(cont):
