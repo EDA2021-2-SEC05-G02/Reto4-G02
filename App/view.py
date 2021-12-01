@@ -96,7 +96,7 @@ def LoadData(cont):
     print('El total de ciudades es: ' + str(CitySize))
 
 def Req1(cont):
- pass
+    pass
 
 def Req2(cont):
     air1 = input('Ingrese el IATA del aeropuerto 1: ')
@@ -110,7 +110,11 @@ def Req2(cont):
     print('El total de clusteres presentes en la red de transporte aereo son: ' + str(airport[0]))
 
 def Req3(cont):
- pass
+    city = input('Ingrese la ciudad: ')
+    cities = controller.SearchCity(cont, city)
+    for cit in lt.iterator(cities):
+        print(cit)
+ 
 
 def Req4(cont):
  pass
@@ -197,13 +201,13 @@ def run():
             LoadData(cont)
             
         elif int(inputs[0]) == 3:
-            pass
+             pass
 
         elif int(inputs[0]) == 4:
             Req2(cont)
 
         elif int(inputs[0]) == 5:
-            pass
+            Req3(cont)
 
         elif int(inputs[0]) == 6:
             pass

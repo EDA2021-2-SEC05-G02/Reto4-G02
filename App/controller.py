@@ -91,7 +91,7 @@ def loadInfo(analyzer):
     city_file = csv.DictReader(open(worldcitiesfile, encoding="utf-8"),
                                 delimiter=",")
     for city in city_file:
-        model.AddCity(analyzer, city)
+        model.addCity(analyzer, city)
         
     return analyzer, first
 
@@ -111,6 +111,9 @@ def FirstAirportandLastCity():
     return firstairport, lastcity
     
 
+
+def SearchCity(analyzer, city):
+    return model.SearchCity(analyzer, city)
 
 def totalAirperGraph(analyzer):
     """

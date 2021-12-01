@@ -65,9 +65,12 @@ def newAnalyzer():
 
         
         """
-        Se crea un arbol de las ciudades
+        Se crea un mapa de las ciudades
         """
-        analyzer['Cities'] = om.newMap(omaptype='RBT', comparefunction=compareString)
+        analyzer['cities'] = mp.newMap(numelements=41002, 
+                                       maptype='CHAINING',
+                                       loadfactor= 4.0,
+                                       comparefunction=compareCity)
 
 
         """
@@ -104,6 +107,43 @@ def newAnalyzer():
         error.reraise(exp, 'Error in model:newAnalyzer')
 
 
+
+
+
+
+
+# Funciones para agregar informacion a los mapas
+
+def addCity(analyzer, city):
+     
+    info = {}
+    info['city_ascii'] = city['city_ascii']
+    info['lat'] = city['lat']
+    info['lng'] = city['lng']
+    info['country'] = city['country']
+    lt.addLast(analyzer['cities'], info)
+    addCitiestoCity(analyzer, info)
+
+def addCitiestoCity(analyzer, info):
+    cities = analyzer['cities']
+    city_ascii = info['city_ascii']
+    existcity = mp.contains(cities, city_ascii)
+    if existcity:
+        entry = mp.get(cities, city_ascii)
+        city = me.getValue(entry)
+    else: 
+        city = newCity(city_ascii)
+        mp.put(cities, city_ascii, city)
+    
+    lt.addLast(city['valor'], info)
+
+def newCity(city):
+    entry = {'city': "", 'valor': None}
+    entry['city'] = city
+    entry['valor'] = lt.newList('ARRAY_LIST')
+    return entry
+
+
 # Funciones para agregar informacion a arboles 
 
 def addIATA_Airport(analyzer, airport):
@@ -111,36 +151,9 @@ def addIATA_Airport(analyzer, airport):
     Anadir el IATA_Airport
     """
     om.put(analyzer['IATA_Airport'], airport['IATA'], airport)
-    
 
-def AddCity(analyzer, city):
-    """
-    Se toma la ciudad y se busca si ya existe 
-    en el arbol dicha ciudad. 
 
-    -Si se encuentra, se adiciona a su lista de la ciudad.
-    -Si no se encuentra, crea un nodo para esa ciudad en el
-     arbol.
-    """
-    aircity = city['city_ascii']
-    entry = om.get(analyzer['Cities'], aircity)
-    if entry is None:
-        cityentry = newCity(aircity)
-        om.put(analyzer['Cities'], aircity, cityentry)
-    else:
-        cityentry = me.getValue(entry)
 
-    lt.addLast(cityentry['city_value'], city)
-
-def newCity(city):
-    """
-    Crea una entrada en el indice por ciudad, es decir en el arbol
-    binario.
-    """
-    entry = {'city': None, 'city_value': None}
-    entry['city'] = city
-    entry['city_value'] = lt.newList('ARRAY_LIST')
-    return entry
 
 # Funciones para agregar informacion grafos
 
@@ -237,8 +250,18 @@ def totalConnectionsperGraph(analyzer):
 def CitySize(analyzer):
     """
     Retorna el tamaño del mapa de ciudades
+    # Revisar, cambiar implementacion
     """
-    return om.size(analyzer['Cities'])
+    return mp.size(analyzer['cities'])
+
+def SearchCity(analyzer, city):
+    lista = lt.newList('ARRAY_LIST')
+    cities = mp.get(analyzer['cities'], city)
+    if cities:
+        value = me.getValue(cities)['valor']
+        lt.addLast(lista, value)
+
+    return lista
 
 
 # Requerimientos
@@ -295,6 +318,15 @@ def compareAirportIDs(iatacode , airport):
     if (iatacode == airportcode):
         return 0
     elif (iatacode > airportcode):
+        return 1
+    else:
+        return -1
+
+def compareCity(keyname , city):
+    cityentry = me.getKey(city)
+    if (keyname == cityentry):
+        return 0
+    elif (keyname > cityentry):
         return 1
     else:
         return -1
