@@ -250,9 +250,10 @@ def totalConnectionsperGraph(analyzer):
 def CitySize(analyzer):
     """
     Retorna el tamaño del mapa de ciudades
-    # Revisar, cambiar implementacion
     """
-    return mp.size(analyzer['cities'])
+    llaves = mp.keySet(analyzer['cities'])
+    size = lt.size(llaves)
+    return size
 
 def SearchCity(analyzer, city):
     lista = lt.newList('ARRAY_LIST')
@@ -260,6 +261,7 @@ def SearchCity(analyzer, city):
     if cities:
         value = me.getValue(cities)['valor']
         lt.addLast(lista, value)
+
 
     return lista
 
