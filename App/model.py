@@ -124,12 +124,14 @@ def addCity(analyzer, city):
     info['lat'] = city['lat']
     info['lng'] = city['lng']
     info['country'] = city['country']
+    info['population'] = city['population']
+    info['admin_name'] = city['admin_name']
     lt.addLast(analyzer['cities'], info)
     addCitiestoCity(analyzer, info)
 
 def addCitiestoCity(analyzer, info):
     cities = analyzer['cities']
-    city_ascii = info['city_ascii']
+    city_ascii = info['city_ascii'].lower()
     existcity = mp.contains(cities, city_ascii)
     if existcity:
         entry = mp.get(cities, city_ascii)
@@ -280,6 +282,7 @@ def AirCluster(analyzer, vertexA, vertexB):
 #! Req 3
 def SearchCity(analyzer, city):
     cities = mp.get(analyzer['cities'], city)
+    value = None
     if cities:
         value = me.getValue(cities)['valor']
     return value

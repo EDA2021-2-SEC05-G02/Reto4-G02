@@ -41,15 +41,14 @@ operación solicitada
 
 def printMenu():
     print("Bienvenido")
-    print("1- Inicializar Analizador")
-    print("2- Cargar información de los aeropuertos")
-    print("3- (Req 1) Encontrar puntos de interconexión aérea")
-    print("4- (Req 2) Encontrar clústeres de tráfico aéreo")
-    print("5- (Req 3) Encontrar la ruta más corta entre ciudades")
-    print("6- (Req 4) Utilizar las millas de viajero")
-    print("7- (Req 5) Cuantificar el efecto de un aeropuerto cerrado")
-    print("8- (Bono) Comparar con servicio WEB externo")
-    print("9- (Bono) Visualizar gráficamente los requerimientos")
+    print("1- Cargar información de los aeropuertos")
+    print("2- (Req 1) Encontrar puntos de interconexión aérea")
+    print("3- (Req 2) Encontrar clústeres de tráfico aéreo")
+    print("4- (Req 3) Encontrar la ruta más corta entre ciudades")
+    print("5- (Req 4) Utilizar las millas de viajero")
+    print("6- (Req 5) Cuantificar el efecto de un aeropuerto cerrado")
+    print("7- (Bono) Comparar con servicio WEB externo")
+    print("8- (Bono) Visualizar gráficamente los requerimientos")
     print("0- Salir")
 
 def printLastCity(city):
@@ -69,6 +68,15 @@ def printAirports(airports):
    x.field_names = ["IATA", "Name", "City", "Country", "Latitude", "Longitude"]
    for airport in lt.iterator(airports):
         x.add_row([airport['IATA'], airport['Name'], airport['City'], airport['Country'], airport['Latitude'], airport['Longitude']])
+   print(x)
+
+def printCitiesSameName (cities):
+   x = PrettyTable(hrules=prettytable.ALL)
+   x.field_names = ['#','City', 'Population', 'Latitude', 'Longitude', 'Country', 'Admin_name']
+   i = 0
+   for city in lt.iterator(cities):
+       i+=1
+       x.add_row([i, city['city_ascii'], city['population'], city['lat'], city['lng'], city['country'], city['admin_name']])
    print(x)
 
 def LoadData(cont):
@@ -107,10 +115,19 @@ def Req2(cont):
     print('El total de clusteres presentes en la red de transporte aereo son: ' + str(airport[0]))
 
 def Req3(cont):
-    city = input('Ingrese la ciudad: ')
-    cities = controller.SearchCity(cont, city)
-    for cit in lt.iterator(cities):
-        print(cit)
+    ori_city = input('Ingrese la ciudad de origen: ')
+    ori_cities = controller.SearchCity(cont, ori_city.lower())
+    if lt.size(ori_cities) > 1:
+        print("Se encontraron", lt.size(ori_cities), "ciudades con el mismo nombre")
+        printCitiesSameName(ori_cities)
+        num_oricity = input("Seleccione el numero de la ciudad que quiere consultar: ")
+
+    dest_city = input('\nIngrese la ciudad de destino: ')
+    dest_cities = controller.SearchCity(cont, dest_city.lower())
+    if lt.size(dest_cities) > 1:
+        print("Se encontraron", lt.size(dest_cities), "ciudades con el mismo nombre")
+        printCitiesSameName(dest_cities)
+        num_destcity = input("Seleccione el numero de la ciudad que quiere consultar: ")
  
 
 def Req4(cont):
@@ -127,7 +144,6 @@ def Req5(cont):
         print("The affected airports are:")
         printAirports(affected)
 
-
 def Req6Bono(cont):
  pass
 
@@ -137,9 +153,6 @@ def Req7Bono(cont):
     controller.Mapa(affected)
 
     
-
-
-
 cont = None #catalog
 """
 Menu principal
@@ -150,29 +163,27 @@ def run():
         inputs = input('Seleccione una opción para continuar\n')
         if int(inputs[0]) == 1:
             cont = controller.initAnalyzer()
-
-        elif int(inputs[0]) == 2:
             LoadData(cont)
             
-        elif int(inputs[0]) == 3:
+        elif int(inputs[0]) == 2:
              pass
 
-        elif int(inputs[0]) == 4:
+        elif int(inputs[0]) == 3:
             Req2(cont)
 
-        elif int(inputs[0]) == 5:
+        elif int(inputs[0]) == 4:
             Req3(cont)
 
-        elif int(inputs[0]) == 6:
+        elif int(inputs[0]) == 5:
             pass
 
-        elif int(inputs[0]) == 7:
+        elif int(inputs[0]) == 6:
             Req5(cont)
 
-        elif int(inputs[0]) == 8:
+        elif int(inputs[0]) == 7:
             pass
         
-        elif int(inputs[0]) == 9:
+        elif int(inputs[0]) == 8:
             Req7Bono(cont)
 
         else:
