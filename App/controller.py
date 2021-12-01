@@ -47,58 +47,53 @@ def loadData(analyzer):
     """
     Carga los datos desde los archivos csv
     """
-    # Carga de datos de aeropuertos
-    loadAirports(analyzer)
-
-    # Carga de datos de rutas
-    routes = loadRoutes(analyzer)
-
+    # Carga de todos los datos
+    routes = loadInfo(analyzer)
     firstAirport = routes[1]
-
-    # Carga de datos de ciudades
-    LoadWorldCities(analyzer)
+    # Inicializa Kosajaru
     Kosajaru(analyzer)
-    
     return firstAirport
 
-def loadAirports(analyzer):
+def loadInfo(analyzer):
+    """
+    Airports File
+    """
     airportfile = cf.data_dir + "airports_full.csv"
     input_file = csv.DictReader(open(airportfile, encoding="utf-8"),
                                 delimiter=",")
     for airport in input_file:
         model.addVertex(analyzer, airport)
         model.addIATA_Airport(analyzer, airport)
-        
-    return analyzer
 
+    """
+    Routes file
+    """
 
-def loadRoutes(analyzer):
     routesfile = cf.data_dir + "routes_full.csv"
-    input_file = csv.DictReader(open(routesfile, encoding="utf-8"),
+    routes_file = csv.DictReader(open(routesfile, encoding="utf-8"),
                                 delimiter=",")
     first = True
     first_airport = None
 
-    for routes in input_file:
+    for routes in routes_file:
         _,dual = model.AddConnections(analyzer, routes)
         if dual and first:
             first = False
             first_airport = routes['Departure']
     
-    
-    
     first = model.SearchbyIATA(analyzer, first_airport)
-    return analyzer, first
 
-def LoadWorldCities(analyzer):
+    """
+    Cities file
+    """
+
     worldcitiesfile = cf.data_dir + "worldcities.csv"
-    input_file = csv.DictReader(open(worldcitiesfile, encoding="utf-8"),
+    city_file = csv.DictReader(open(worldcitiesfile, encoding="utf-8"),
                                 delimiter=",")
-
-    for city in input_file:
+    for city in city_file:
         model.AddCity(analyzer, city)
-
-    return analyzer
+        
+    return analyzer, first
 
 
 def FirstAirportandLastCity():
