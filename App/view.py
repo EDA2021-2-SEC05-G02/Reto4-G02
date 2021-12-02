@@ -51,16 +51,22 @@ def printMenu():
     print("8- (Bono) Visualizar gráficamente los requerimientos")
     print("0- Salir")
 
-def printLastCity(city):
+def printFirstLastCity(cities):
    x = PrettyTable(hrules=prettytable.ALL)
-   x.field_names = ['City', 'population', 'lat', 'lng']
-   x.add_row([city['city_ascii'], city['population'], city['lat'], city['lng']])
+   x.field_names = ['City', 'Country','Lat', 'Lng', 'population']
+   city1 = lt.firstElement(cities)
+   city2 = lt.lastElement(cities)
+   x.add_row([city1['city_ascii'], city1['country'], city1['lat'], city1['lng'], city1['population']])
+   x.add_row([city2['city_ascii'], city2['country'], city2['lat'], city2['lng'], city2['population']])
    print(x)
 
-def printFirstAirport(airport):
+def printFirstLastAirport(airports):
    x = PrettyTable(hrules=prettytable.ALL)
    x.field_names = ["IATA", "Name", "City", "Country", "Latitude", "Longitude"]
-   x.add_row([airport['IATA'], airport['Name'], airport['City'], airport['Country'], airport['Latitude'], airport['Longitude']])
+   air1 = lt.firstElement(airports)
+   air2 = lt.lastElement(airports)
+   x.add_row([air1['IATA'], air1['Name'], air1['City'], air1['Country'], air1['Latitude'], air1['Longitude']])
+   x.add_row([air2['IATA'], air2['Name'], air2['City'], air2['Country'], air2['Latitude'], air2['Longitude']])
    print(x)
 
 def printAirports(airports):
@@ -86,29 +92,31 @@ def printAirInterconection(airport):
        x.add_row([air['Airport'], air['Interconnections'], air['Name'], air['City'], air['Country']])
    print(x)
 
-
-
 def LoadData(cont):
     print("Cargando información de los aeropuertos ....")
-    loadData = controller.loadData(cont)
-    
-    print('El primer aeropuerto cargado del grafo no dirgido es')
-    printFirstAirport(loadData)
+    controller.loadData(cont)
+    vertex = controller.totalAirperGraph(cont)
+    edges = controller.totalConnectionsperGraph(cont)
+    city = lt.size(cont['lt cities'])
 
-    data = controller.FirstAirportandLastCity()
-    print('El primer aeropuerto cargado del grafo dirgido es')
-    printFirstAirport(data[0])
-    print('La ultima ciudad cargada es')
-    printLastCity(data[1])
-    numedges = controller.totalConnectionsperGraph(cont)
-    numvertex = controller.totalAirperGraph(cont)
-    CitySize = controller.CitySize(cont)
-    print('Total de aeropuertos del grafo dirigido: ' + str(numvertex[0]))
-    print('Total de aeropuertos del grafo no dirigido: ' + str(numvertex[1]))
-    print('Numero de rutas aereas del grafo dirigido: ' + str(numedges[0]))
-    print('Numero de rutas aereas del grafo no dirigido: ' + str(numedges[1]))
-    print('El total de ciudades es: ' + str(CitySize))
+    print("\n=== Airport-Routes DiGraph ===")
+    print("Nodes/Vertex:", vertex[0], "loaded airports.")
+    print("Edges:", edges[0], "loaded routes.")
+    print("First & last Airport loaded in the DiGraph:")
+    printFirstLastAirport(cont['lt airports'])
 
+    print("\n=== Airport-Routes Graph ===")
+    print("Nodes/Vertex:", vertex[1], "loaded airports.")
+    print("Edges:", edges[1], "loaded routes.")
+    print("First & last Airport loaded in the Graph:")
+    printFirstLastAirport(cont['lt airports'])
+
+    print("\n=== City Network ===")
+    print("The number of cities are:", city)
+    print("First & last City loaded in data structure:")
+    printFirstLastCity(cont['lt cities'])
+
+#Requerimientos
 def Req1(cont):
     airports=controller.AirInterconection(cont)
     print('El numero de aeropuertos interconectados es de: ',lt.size(airports))
@@ -205,5 +213,3 @@ if __name__ == "__main__":
     sys.setrecursionlimit(2 ** 20)  
     thread = threading.Thread(target=run)
     thread.start()
-
-    

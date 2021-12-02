@@ -57,6 +57,10 @@ def newAnalyzer():
     try:
         analyzer = {}
 
+        analyzer['lt cities'] = lt.newList('ARRAY_LIST')
+        analyzer['lt airports'] = lt.newList('ARRAY_LIST')
+        analyzer['lt routes'] = lt.newList('ARRAY_LIST')
+
         """
         Se crea un arbol de los aeropuertos por IATA
         """
@@ -112,7 +116,7 @@ def addCity(analyzer, city):
     info['country'] = city['country']
     info['population'] = city['population']
     info['admin_name'] = city['admin_name']
-    lt.addLast(analyzer['cities'], info)
+    lt.addLast(analyzer['lt cities'], info)
     addCitiestoCity(analyzer, info)
 
 def addCitiestoCity(analyzer, info):
@@ -140,6 +144,7 @@ def addIATA_Airport(analyzer, airport):
     """
     Anadir el IATA_Airport
     """
+    lt.addLast(analyzer['lt airports'], airport)
     om.put(analyzer['IATA_Airport'], airport['IATA'], airport)
 
 # Funciones para agregar informacion grafos
@@ -165,6 +170,8 @@ def AddConnections(analyzer, routes):
     """
     Adiciona un arco entre dos aeropuertos.
     """
+    lt.addLast(analyzer['lt routes'], routes)
+
     edge = gr.getEdge(analyzer['connections'], routes['Departure'], routes['Destination'])
     if edge is None:
         gr.addEdge(analyzer['connections'], routes['Departure'], routes['Destination'], routes['distance_km'])

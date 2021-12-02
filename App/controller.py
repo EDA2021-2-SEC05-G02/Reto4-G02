@@ -24,9 +24,6 @@ from App.model import Kosajaru
 import config as cf
 import model
 import csv
-import prettytable 
-from prettytable import PrettyTable
-from DISClib.ADT import list as lt
 
 """
 El controlador se encarga de mediar entre la vista y el modelo.
@@ -48,67 +45,36 @@ def loadData(analyzer):
     Carga los datos desde los archivos csv
     """
     # Carga de todos los datos
-    routes = loadInfo(analyzer)
-    firstAirport = routes[1]
+    loadInfo(analyzer)
     # Inicializa Kosajaru
     Kosajaru(analyzer)
-    return firstAirport
 
 def loadInfo(analyzer):
     """
     Airports File
     """
-    airportfile = cf.data_dir + "airports_full.csv"
+    airportfile = cf.data_dir + "airports-utf8-small.csv"
     input_file = csv.DictReader(open(airportfile, encoding="utf-8"),
                                 delimiter=",")
     for airport in input_file:
         model.addVertex(analyzer, airport)
         model.addIATA_Airport(analyzer, airport)
-
     """
     Routes file
     """
-
-    routesfile = cf.data_dir + "routes_full.csv"
+    routesfile = cf.data_dir + "routes-utf8-small.csv"
     routes_file = csv.DictReader(open(routesfile, encoding="utf-8"),
                                 delimiter=",")
-    first = True
-    first_airport = None
-
     for routes in routes_file:
-        _,dual = model.AddConnections(analyzer, routes)
-        if dual and first:
-            first = False
-            first_airport = routes['Departure']
-    
-    first = model.SearchbyIATA(analyzer, first_airport)
-
+        model.AddConnections(analyzer, routes) 
     """
     Cities file
     """
-
-    worldcitiesfile = cf.data_dir + "worldcities.csv"
+    worldcitiesfile = cf.data_dir + "worldcities-utf8.csv"
     city_file = csv.DictReader(open(worldcitiesfile, encoding="utf-8"),
                                 delimiter=",")
     for city in city_file:
         model.addCity(analyzer, city)
-        
-    return analyzer, first
-
-
-def FirstAirportandLastCity():
-    worldcitiesfile = cf.data_dir + "worldcities.csv"
-    input_file = csv.DictReader(open(worldcitiesfile, encoding="utf-8"),
-                                delimiter=",")
-    lista = list(input_file)
-    lastcity = lista[-1]
-
-    airportfile = cf.data_dir + "airports_full.csv"
-    input_file = csv.DictReader(open(airportfile, encoding="utf-8"),
-                                delimiter=",")
-
-    firstairport = next(input_file)
-    return firstairport, lastcity
 
 # Funciones de ordenamiento
 
