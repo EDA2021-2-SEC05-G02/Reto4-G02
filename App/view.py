@@ -133,51 +133,91 @@ def Req2(cont):
     air1 = input('Ingrese el IATA del aeropuerto 1: ').upper()
     air2 = input('Ingrese el IATA del aeropuerto 2: ').upper()
     airport = controller.AirCluster(cont, air1, air2)
-    if airport[1]:
-        print('Los aeropuertos con identificador(IATA) ' + air1 + ' y ' + air2 + ' estan en el mismo cluster.')
-    else:
-        print('Los aeropuertos con identificador(IATA) ' + air1 + ' y ' + air2 + ' no estan en el mismo cluster.')
 
-    print('El total de clusteres presentes en la red de transporte aereo son: ' + str(airport[0]))
+    print("="*15, "Req No. 2 Inputs", "="*15)
+    print("Airport-1 IATA Code:", air1)
+    print("Airport-2 IATA Code:", air2, "\n")
+
+    print("="*15, "Req No. 2 Answer", "="*15)
+    print("Number of SCC in Airport-Route network:", airport[0])
+    print("Does Airport-1 & Airport-2 with IATA code", air1, "and", air2, "belong together?", airport[1])
 
 def Req3(cont):
-    ori_city = input('Ingrese la ciudad de origen: ')
-    ori_cities = controller.SearchCity(cont, ori_city.lower())
-    if lt.size(ori_cities) > 1:
-        print("Se encontraron", lt.size(ori_cities), "ciudades con el mismo nombre")
-        printCitiesSameName(ori_cities)
-        num_oricity = input("Seleccione el numero de la ciudad que quiere consultar: ")
+    depa_city = input('Ingrese la ciudad de origen: ')
+    depa_cities = controller.SearchCity(cont, depa_city.lower())
+    if lt.size(depa_cities) > 1:
+        print("Se encontraron", lt.size(depa_cities), "ciudades con el mismo nombre")
+        printCitiesSameName(depa_cities)
+        num_depacity = input("Seleccione el numero de la ciudad que quiere consultar: ")
 
-    dest_city = input('\nIngrese la ciudad de destino: ')
-    dest_cities = controller.SearchCity(cont, dest_city.lower())
-    if lt.size(dest_cities) > 1:
-        print("Se encontraron", lt.size(dest_cities), "ciudades con el mismo nombre")
-        printCitiesSameName(dest_cities)
+    arriv_city = input('\nIngrese la ciudad de destino: ')
+    arriv_cities = controller.SearchCity(cont, arriv_city.lower())
+    if lt.size(arriv_cities) > 1:
+        print("Se encontraron", lt.size(arriv_cities), "ciudades con el mismo nombre")
+        printCitiesSameName(arriv_cities)
         num_destcity = input("Seleccione el numero de la ciudad que quiere consultar: ")
- 
-def Req4(cont):
+    
+
+    print("="*15, "Req No. 3 Inputs", "="*15)
+    print("Depature city:", depa_city)
+    print("Arrival city:", arriv_city, "\n")
+
+    print("="*15, "Req No. 3 Answer", "="*15)
+    print("+++ The departure airport in", depa_city, "is +++")
+    #TODO Imprimir el aeropuerto mas cercano de la ciudad de origen
+    print("\n+++ The arrival airport in", arriv_city, "is +++")
+    #TODO Imprimir el aeropuerto mas cercano de la ciudad de destino
+
+    print("\n+++ Dijkstra's Trip details +++")
+    print(" - Total distance:" , "(km)") #TODO Calcular la distancia entre Aeropueto de origen y de destimo + distancia entre la ciudad y el Aeropueto de origen
+    print(" - Trip Path:")
+    #TODO Imprimir el camino
+    print(" -Trip Stops:")
+    #TODO Imprimir los aeropuertos en el que se hace escala + origen y destino
+
+def Req4(cont): 
     pass
 
 def Req5(cont):
-    airIata = input('Ingrese el IATA del aeropuerto fuera de servicio: ')
+    airIata = input('Ingrese el IATA del aeropuerto fuera de servicio: ').upper()
+    vertex = controller.totalAirperGraph(cont)
+    edges = controller.totalConnectionsperGraph(cont)
     affected = controller.OutOfService(cont, airIata)
-    print("="*15, " Req No. 5 Inputs ", "="*15)
-    print("Check how many airports are affected if the airport with IATA" ,airIata,  "stops working\n")
-    print("="*15, " Req No. 5 Answer ", "="*15)
-    print("There are" ,lt.size(affected), "airports affected if the airport with IATA" ,airIata, "stops working\n")
-    if lt.size(affected) != 0:
-        print("The affected airports are:")
-        printAirports(affected)
 
+    print("="*15, " Req No. 5 Inputs ", "="*15)
+    print("Closing the airport with IATA code:", airIata)
+    print("\n--- Airport-Routes DiGraph ---")
+    print("Original number of Airports:", vertex[0], "and Routes:", edges[0])
+    print("--- Airport-Routes Graph ---")
+    print("Original number of Airports:", vertex[1], "and Routes:", edges[1])
+
+    print("\n+++ Removing Airport with IATA:", airIata, "+++")
+    print("\n--- Airport-Routes DiGraph ---")
+    print("Original number of Airports:", vertex[0]-1, "and Routes:", edges[0]) #TODO restar los los arcos del aeropuerto
+    print("--- Airport-Routes Graph ---")
+    print("Original number of Airports:", vertex[1], "and Routes:", edges[1], "\n") #TODO verificar si el aeropuerto esta en el grafo y si lo esta: restar los los arcos del aeropuerto 
+
+    print("="*15, " Req No. 5 Answer ", "="*15)
+    print("There are", lt.size(affected), "Airports affected by the removal of", airIata)
+    if lt.size(affected) != 0:
+        if lt.size(affected) > 6:
+            print("The first & last 3 Airports affected are:")
+            affected_air = controller.FirtsAndLast(controller.getFirst(affected, 3), controller.getLast(affected, 3))
+            printAirports(affected_air)
+        else:
+            print("The affected Airports are:")
+            printAirports(affected)
+        
 def Req6Bono(cont):
     pass
 
-def Req7Bono(cont):
+def Req7Bono(cont): #TODO a lo mejor juntarlo con los demas req para no volver a hacer todo el calculo
     airIata = input('Ingrese el IATA del aeropuerto fuera de servicio: ')
     affected = controller.OutOfService(cont, airIata)
     controller.Mapa(affected)
 
 cont = None #catalog
+
 """
 Menu principal
 """
