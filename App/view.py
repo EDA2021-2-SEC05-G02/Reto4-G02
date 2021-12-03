@@ -87,9 +87,9 @@ def printCitiesSameName (cities):
 
 def printAirInterconection(airport):
    x = PrettyTable(hrules=prettytable.ALL)
-   x.field_names = ['IATA', '# Interconnections', 'Airport (Name)', 'City', 'Country']
+   x.field_names = ['IATA', 'Airport (Name)', 'City', 'Country', 'Connections', 'Inbound', 'Outbound',]
    for air in lt.iterator(airport):
-       x.add_row([air['Airport'], air['Interconnections'], air['Name'], air['City'], air['Country']])
+       x.add_row([air['Airport'], air['Name'], air['City'], air['Country'], air['Interconnections'], air['Inbound'], air['Outbound']])
    print(x)
 
 def LoadData(cont):
@@ -119,8 +119,14 @@ def LoadData(cont):
 #Requerimientos
 def Req1(cont):
     airports=controller.AirInterconection(cont)
-    print('El numero de aeropuertos interconectados es de: ',lt.size(airports))
     top5 = controller.getFirst(airports, 5)
+    print("="*15, "Req No. 1 Inputs", "="*15)
+    print("Most connected airports in network (TOP 5) ")
+    print("Number of airports in network:", lt.size(cont['lt airports']), "\n")
+
+    print("="*15, "Req No. 1 Answer", "="*15)
+    print('Connected airports inside network: ',lt.size(airports))
+    print("TOP 5 most connected airports...")
     printAirInterconection(top5)
 
 def Req2(cont):

@@ -267,7 +267,9 @@ def AirInterconection(analyzer):
     interconnections=lt.newList(datastructure="ARRAY_LIST")
     vertices= gr.vertices(analyzer['connections'])
     for vertex in lt.iterator(vertices):
-        num_connections = gr.indegree(analyzer['connections'],vertex) + gr.outdegree(analyzer['connections'],vertex)
+        inbound = gr.indegree(analyzer['connections'],vertex)
+        outbound = gr.outdegree(analyzer['connections'],vertex)
+        num_connections = inbound + outbound
         if num_connections == 0:
             continue
         airport=om.get(analyzer['IATA_Airport'], vertex)['value']
@@ -275,7 +277,9 @@ def AirInterconection(analyzer):
               'Interconnections': num_connections,
               'Name':airport['Name'],
               'City':airport['City'],
-              'Country': airport['Country']}
+              'Country': airport['Country'],
+              'Inbound': inbound,
+              'Outbound': outbound}
         lt.addLast(interconnections,info)
     mer.sort(interconnections, cmpInterconnections)
     return interconnections
