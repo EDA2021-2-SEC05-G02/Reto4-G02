@@ -40,7 +40,7 @@ operación solicitada
 """
 
 def printMenu():
-    print("Bienvenido")
+    print("\nBienvenido")
     print("1- Cargar información de los aeropuertos")
     print("2- (Req 1) Encontrar puntos de interconexión aérea")
     print("3- (Req 2) Encontrar clústeres de tráfico aéreo")
