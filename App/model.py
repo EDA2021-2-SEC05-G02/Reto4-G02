@@ -160,6 +160,9 @@ def addVertex(analyzer, airport):
         if not gr.containsVertex(analyzer['reverse connections'], airport['IATA']):
             gr.insertVertex(analyzer['reverse connections'], airport['IATA'])
 
+        if not gr.containsVertex(analyzer['onlyroute'], airport['IATA']):
+            gr.insertVertex(analyzer['onlyroute'], airport['IATA'])
+
 
         return analyzer
 
@@ -187,13 +190,6 @@ def AddConnections(analyzer, routes):
     Si el arco de destino a origen del grafo no dirigido esta vacio, se agrega el arco de destino a origen junto con el peso.
     """
     if edgeDestinationtoDeparture is not None:
-        # Si no se contiene el vertice de destination en el grafo no dirigido, se agrega
-        if not gr.containsVertex(analyzer['onlyroute'], routes['Destination']):
-            gr.insertVertex(analyzer['onlyroute'], routes['Destination'])
-        
-        # Si no se contiene el vertice de departure en el grafo no dirigido, se agrega
-        if not gr.containsVertex(analyzer['onlyroute'], routes['Departure']):
-            gr.insertVertex(analyzer['onlyroute'], routes['Departure'])
         
         # Si arco que se busca obtener esta vacio, se agrega
         if gr.getEdge(analyzer['onlyroute'], routes['Destination'], routes['Departure']) is None:
