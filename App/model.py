@@ -437,3 +437,14 @@ def getDistance (departure, arrival):
     distance = acos(sin(departure[0])*sin(arrival[0]) + cos(departure[0])*cos(arrival[0])*cos(departure[1] - arrival[1]))
     km = distance * 6371.01
     return km
+
+def getNearestAirport(city, aumento):
+    lat = city['lat']
+    lng = city['lng']
+
+    #Aumentar 10km aprox 
+
+    expan_lat = aumento * 0.09 # entre lat 0 y lat 0.09 hay una distancia aprox de 10 km
+    expan_lng = aumento * 0.09 # entre lng 0 y lng 0.09 hay una distancia aprox de 10 km
+
+    
