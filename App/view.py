@@ -176,7 +176,26 @@ def Req3(cont):
     #TODO Imprimir los aeropuertos en el que se hace escala + origen y destino
 
 def Req4(cont): 
-    pass
+    city = ""
+    airIata = ""
+    millas = ""
+    print("="*15, "Req No. 4 Inputs", "="*15)
+    print("Departure IATA code:", airIata)
+    print("Available Travel Miles:",millas, "\n")
+
+    print("="*15, "Req No. 4 Answer", "="*15)
+    print("+++ Departure Airport for IATA code:", airIata, "+++")
+    #TODO imprimir info del aeropuerto
+    print("\n- Number of possible airports:") #TODO
+    print("- Max traveling distance between airports:", "(km).") #TODO
+    print("- Passenger avalaible traveling miles:", "(km).") #TODO
+    print("\n+++ Longest possible route with airport", airIata, "+++")
+    print("- Longest possible path distance:", "(km).") #TODO
+    print("- Longest possible path details:")
+    #TODO imprimir info del camino
+    print("-----")
+    print("The passeenger needs", "miles to complete the trip.") #TODO
+    print("-----")
 
 def Req5(cont):
     airIata = input('Ingrese el IATA del aeropuerto fuera de servicio: ').upper()
