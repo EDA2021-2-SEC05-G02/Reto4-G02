@@ -144,19 +144,25 @@ def Req2(cont):
 
 def Req3(cont):
     depa_city = input('Ingrese la ciudad de origen: ')
+    arriv_city = input('\nIngrese la ciudad de destino: ')
+
+    arriv_cities = controller.SearchCity(cont, arriv_city.lower())
     depa_cities = controller.SearchCity(cont, depa_city.lower())
+    departure = lt.firstElement(depa_cities)
+    arrival = lt.firstElement(arriv_cities)
+
     if lt.size(depa_cities) > 1:
-        print("Se encontraron", lt.size(depa_cities), "ciudades con el mismo nombre")
+        print("Se encontraron", lt.size(depa_cities), "ciudades de origen con el mismo nombre")
         printCitiesSameName(depa_cities)
         num_depacity = input("Seleccione el numero de la ciudad que quiere consultar: ")
+        departure = lt.getElement(depa_cities,num_depacity)
 
-    arriv_city = input('\nIngrese la ciudad de destino: ')
-    arriv_cities = controller.SearchCity(cont, arriv_city.lower())
     if lt.size(arriv_cities) > 1:
-        print("Se encontraron", lt.size(arriv_cities), "ciudades con el mismo nombre")
+        print("Se encontraron", lt.size(arriv_cities), "ciudades de destino con el mismo nombre")
         printCitiesSameName(arriv_cities)
         num_destcity = input("Seleccione el numero de la ciudad que quiere consultar: ")
-    
+        arrival = lt.getElement(arriv_cities,num_destcity)
+        
 
     print("="*15, "Req No. 3 Inputs", "="*15)
     print("Depature city:", depa_city)
