@@ -36,10 +36,12 @@ from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.Utils import error as error
 from DISClib.Algorithms.Sorting import mergesort as mer
+from math import acos, cos, sin, radians
 assert cf
 import pandas as pd
 import folium
 import webbrowser
+
 
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
@@ -297,6 +299,7 @@ def SearchCity(analyzer, city):
         value = me.getValue(cities)['valor']
     return value
 
+
 #! Req 4
 
 #! Req 5
@@ -416,4 +419,21 @@ def compareString(str1, str2):
 def cmpInterconnections (a1,a2):
     return a1['Interconnections']>a2['Interconnections']
 
-# Funciones de ordenamiento
+# Funciones auxiliares
+
+def getDistance (departure, arrival):
+    """
+    distancia en kilometros entre 2 puntos 
+    departure = (latitud, longitud)
+    arrival = (latitud, longitud)
+
+
+    Tomado de: https://github.com/Fhernd/PythonEjercicios/blob/master/Parte001/ex744_distancia_puntos_latitud_longitud.py
+               https://www.youtube.com/watch?v=ylTHl3bF9nY&t=189s
+    """
+    departure = (radians(departure[0]), radians(departure[1]))
+    arrival = (radians(arrival[0]), radians(arrival[1]))
+
+    distance = acos(sin(departure[0])*sin(arrival[0]) + cos(departure[0])*cos(arrival[0])*cos(departure[1] - arrival[1]))
+    km = distance * 6371.01
+    return km
