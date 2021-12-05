@@ -57,6 +57,7 @@ def loadInfo(analyzer):
     input_file = csv.DictReader(open(airportfile, encoding="utf-8"),
                                 delimiter=",")
     for airport in input_file:
+        model.addAirport(analyzer, airport)
         model.addVertex(analyzer, airport)
         model.addIATA_Airport(analyzer, airport)
     """

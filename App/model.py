@@ -78,6 +78,15 @@ def newAnalyzer():
                                        loadfactor= 4.0,
                                        comparefunction=compareCity)
 
+        """
+        Se crea un mapa de los aeropueros
+        """
+
+        analyzer['airports'] = mp.newMap(numelements=9076,
+                                         maptype='CHAINING',
+                                         loadfactor= 4.0,
+                                         comparefunction=compareAirportIDs)
+
 
         """
         Se crea un grafo dirigido de las conexiones de las rutas
@@ -121,6 +130,19 @@ def addCity(analyzer, city):
     lt.addLast(analyzer['lt cities'], info)
     addCitiestoCity(analyzer, info)
 
+
+def addAirport(analyzer, airport):
+    info = {}
+    info['Id'] = airport['Id']
+    info['Name'] = airport['Name']
+    info['City'] = airport['City']
+    info['Country'] = airport['Country']
+    info['IATA'] = airport['IATA']
+    info['Latitude'] = airport['Latitude']
+    info['Longitude'] = airport['Longitude']
+    lt.addLast(analyzer['lt airports'], info)
+    addAirporttoIATA(analyzer, info)
+
 def addCitiestoCity(analyzer, info):
     cities = analyzer['cities']
     city_ascii = info['city_ascii'].lower()
@@ -134,11 +156,33 @@ def addCitiestoCity(analyzer, info):
     
     lt.addLast(city['valor'], info)
 
+def addAirporttoIATA(analyzer, info):
+    airports = analyzer['airports']
+    airportIATA = info['IATA']
+    existairport = mp.contains(airports, airportIATA)
+    if existairport:
+        entry = mp.get(airports, airportIATA)
+        airport = me.getValue(entry)
+    else:
+        airport = newAirport(airportIATA)
+        mp.put(airports, airportIATA, airport)
+
+    lt.addLast(airport['valor'], info)
+        
+
+def newAirport(airportIATA):
+    entry = {'IATA': "", 'valor': None}
+    entry['IATA'] = airportIATA
+    entry['valor'] = lt.newList('ARRAY_LIST')
+    return entry
+
 def newCity(city):
     entry = {'city': "", 'valor': None}
     entry['city'] = city
     entry['valor'] = lt.newList('ARRAY_LIST')
     return entry
+
+
 
 # Funciones para agregar informacion a arboles 
 
