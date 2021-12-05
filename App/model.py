@@ -98,7 +98,7 @@ def newAnalyzer():
         Se crea un grafo no dirigido de las conexiones de las rutas
         """
 
-        analyzer['onlyroute'] = gr.newGraph(datastructure='ADJ_LIST',
+        analyzer['doubleroute'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=False,
                                               size=92606,
                                               comparefunction=compareAirportIDs)
@@ -162,8 +162,8 @@ def addVertex(analyzer, airport):
         if not gr.containsVertex(analyzer['reverse connections'], airport['IATA']):
             gr.insertVertex(analyzer['reverse connections'], airport['IATA'])
 
-        if not gr.containsVertex(analyzer['onlyroute'], airport['IATA']):
-            gr.insertVertex(analyzer['onlyroute'], airport['IATA'])
+        if not gr.containsVertex(analyzer['doubleroute'], airport['IATA']):
+            gr.insertVertex(analyzer['doubleroute'], airport['IATA'])
 
 
         return analyzer
@@ -194,8 +194,8 @@ def AddConnections(analyzer, routes):
     if edgeDestinationtoDeparture is not None:
         
         # Si arco que se busca obtener esta vacio, se agrega
-        if gr.getEdge(analyzer['onlyroute'], routes['Destination'], routes['Departure']) is None:
-            gr.addEdge(analyzer['onlyroute'], routes['Destination'], routes['Departure'], routes['distance_km'])
+        if gr.getEdge(analyzer['doubleroute'], routes['Destination'], routes['Departure']) is None:
+            gr.addEdge(analyzer['doubleroute'], routes['Destination'], routes['Departure'], routes['distance_km'])
 
     return analyzer, edgeDestinationtoDeparture is not None
 
@@ -218,16 +218,16 @@ def totalAirperGraph(analyzer):
     Retorna el total de aeropuertos (vertices) de los grafos
     """
     conections = gr.numVertices(analyzer['connections'])
-    onlyroute = gr.numVertices(analyzer['onlyroute'])
-    return conections, onlyroute
+    doubleroute = gr.numVertices(analyzer['doubleroute'])
+    return conections, doubleroute
 
 def totalConnectionsperGraph(analyzer):
     """
     Retorna el total arcos de los grafos
     """
     conections = gr.numEdges(analyzer['connections'])
-    onlyroute = gr.numEdges(analyzer['onlyroute'])
-    return conections, onlyroute
+    doubleroute = gr.numEdges(analyzer['doubleroute'])
+    return conections, doubleroute
 
 def CitySize(analyzer):
     """
