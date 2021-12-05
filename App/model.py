@@ -36,7 +36,7 @@ from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.Utils import error as error
 from DISClib.Algorithms.Sorting import mergesort as mer
-from math import acos, cos, sin, radians
+from haversine import haversine #para instalar: pip install haversine
 assert cf
 import pandas as pd
 import folium
@@ -428,15 +428,9 @@ def getDistance (departure, arrival):
     arrival = (latitud, longitud)
 
 
-    Tomado de: https://github.com/Fhernd/PythonEjercicios/blob/master/Parte001/ex744_distancia_puntos_latitud_longitud.py
-               https://www.youtube.com/watch?v=ylTHl3bF9nY&t=189s
+    Tomado de: https://pypi.org/project/haversine/
     """
-    departure = (radians(departure[0]), radians(departure[1]))
-    arrival = (radians(arrival[0]), radians(arrival[1]))
-
-    distance = acos(sin(departure[0])*sin(arrival[0]) + cos(departure[0])*cos(arrival[0])*cos(departure[1] - arrival[1]))
-    km = distance * 6371.01
-    return km
+    return haversine(departure, arrival)
 
 def getNearestAirport(city, aumento):
     lat = city['lat']
