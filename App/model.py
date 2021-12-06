@@ -140,8 +140,8 @@ def addAirport(analyzer, airport):
     info['City'] = airport['City']
     info['Country'] = airport['Country']
     info['IATA'] = airport['IATA']
-    info['Latitude'] = airport['Latitude']
-    info['Longitude'] = airport['Longitude']
+    info['Latitude'] = float(airport['Latitude'])
+    info['Longitude'] = float(airport['Longitude'])
     lt.addLast(analyzer['lt airports'], info)
     addAirporttoIATA(analyzer, info)
     updateLatitudeIndex(analyzer['LatitudeIndex'], info)
