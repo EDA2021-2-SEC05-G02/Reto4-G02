@@ -69,6 +69,8 @@ def newAnalyzer():
 
         analyzer['IATA_Airport'] = om.newMap(omaptype='RBT', comparefunction=compareString)
 
+        analyzer['LatitudeIndex'] = om.newMap(omaptype='RBT', comparefunction=compareFloat)
+
         
         """
         Se crea un mapa de las ciudades
@@ -133,7 +135,7 @@ def addCity(analyzer, city):
 
 def addAirport(analyzer, airport):
     info = {}
-    info['Id'] = airport['Id']
+    info['id'] = airport['id']
     info['Name'] = airport['Name']
     info['City'] = airport['City']
     info['Country'] = airport['Country']
@@ -142,6 +144,7 @@ def addAirport(analyzer, airport):
     info['Longitude'] = airport['Longitude']
     lt.addLast(analyzer['lt airports'], info)
     addAirporttoIATA(analyzer, info)
+    updateLatitudeIndex(analyzer['LatitudeIndex'], info)
 
 def addCitiestoCity(analyzer, info):
     cities = analyzer['cities']
@@ -192,6 +195,49 @@ def addIATA_Airport(analyzer, airport):
     """
     lt.addLast(analyzer['lt airports'], airport)
     om.put(analyzer['IATA_Airport'], airport['IATA'], airport)
+
+
+def updateLatitudeIndex(mapa, airport):
+    airlatitude = airport['Latitude']
+    entry = om.get(mapa, airlatitude)
+    if entry is None:
+        latitudentry = newLatitude(airlatitude)
+        om.put(mapa, airlatitude, latitudentry)
+    else:
+        latitudentry = me.getValue(entry)
+
+    latitudentry['size'] += 1
+    updateLongitudeIndex(latitudentry['Longitude'], airport)
+
+
+def updateLongitudeIndex(mapa, airport):
+    airlongitude = airport['Longitude']
+    entry = om.get(mapa, airlongitude)
+    if entry is None:
+        longitudentry = newLongitude(airlongitude)
+        om.put(mapa, airlongitude, longitudentry)
+    else:
+        longitudentry = me.getValue(entry)
+    
+    lt.addLast(longitudentry['airports'], airport)
+    longitudentry['size'] += 1
+    
+
+
+def newLatitude(latitud):
+    entry = {'Latitude': None, 'Longitude':None, 'size':0}
+    entry['Latitude'] = latitud
+    entry['Longitude'] = om.newMap(omaptype='RBT',
+                                  comparefunction=compareFloat)
+    return entry
+
+def newLongitude(longitud):
+    entry = {'Longitude': None,'airports': None, 'size':0}
+    entry['Longitude'] = longitud
+    entry['airports'] = lt.newList('ARRAY_LIST')
+    return entry
+
+
 
 # Funciones para agregar informacion grafos
 
@@ -456,6 +502,19 @@ def compareString(str1, str2):
     if (str1) == (str2):
         return 0
     elif (str1) > (str2):
+        return 1
+    else:
+        return -1
+
+def compareFloat(num1, num2):
+    """
+    Compara dos Floats
+    """
+    num1 = float(num1)
+    num2 = float(num2)
+    if (num1 == num2):
+        return 0
+    elif (num1 > num2):
         return 1
     else:
         return -1
