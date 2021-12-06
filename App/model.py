@@ -143,7 +143,6 @@ def addAirport(analyzer, airport):
     info['Latitude'] = float(airport['Latitude'])
     info['Longitude'] = float(airport['Longitude'])
     lt.addLast(analyzer['lt airports'], info)
-    addAirporttoIATA(analyzer, info)
     updateLatitudeIndex(analyzer['LatitudeIndex'], info)
 
 def addCitiestoCity(analyzer, info):
@@ -158,26 +157,6 @@ def addCitiestoCity(analyzer, info):
         mp.put(cities, city_ascii, city)
     
     lt.addLast(city['valor'], info)
-
-def addAirporttoIATA(analyzer, info):
-    airports = analyzer['airports']
-    airportIATA = info['IATA']
-    existairport = mp.contains(airports, airportIATA)
-    if existairport:
-        entry = mp.get(airports, airportIATA)
-        airport = me.getValue(entry)
-    else:
-        airport = newAirport(airportIATA)
-        mp.put(airports, airportIATA, airport)
-
-    lt.addLast(airport['valor'], info)
-        
-
-def newAirport(airportIATA):
-    entry = {'IATA': "", 'valor': None}
-    entry['IATA'] = airportIATA
-    entry['valor'] = lt.newList('ARRAY_LIST')
-    return entry
 
 def newCity(city):
     entry = {'city': "", 'valor': None}
