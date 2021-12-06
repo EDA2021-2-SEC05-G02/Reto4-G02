@@ -198,7 +198,7 @@ def addIATA_Airport(analyzer, airport):
 
 
 def updateLatitudeIndex(mapa, airport):
-    airlatitude = airport['Latitude']
+    airlatitude = round(airport['Latitude'],2)
     entry = om.get(mapa, airlatitude)
     if entry is None:
         latitudentry = newLatitude(airlatitude)
@@ -211,7 +211,7 @@ def updateLatitudeIndex(mapa, airport):
 
 
 def updateLongitudeIndex(mapa, airport):
-    airlongitude = airport['Longitude']
+    airlongitude = round(airport['Longitude'], 2)
     entry = om.get(mapa, airlongitude)
     if entry is None:
         longitudentry = newLongitude(airlongitude)
