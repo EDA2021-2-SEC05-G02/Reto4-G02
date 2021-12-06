@@ -143,6 +143,7 @@ def addAirport(analyzer, airport):
     info['Latitude'] = float(airport['Latitude'])
     info['Longitude'] = float(airport['Longitude'])
     lt.addLast(analyzer['lt airports'], info)
+    om.put(analyzer['IATA_Airport'], info['IATA'], info)
     updateLatitudeIndex(analyzer['LatitudeIndex'], info)
 
 def addCitiestoCity(analyzer, info):
@@ -167,14 +168,6 @@ def newCity(city):
 
 
 # Funciones para agregar informacion a arboles 
-
-def addIATA_Airport(analyzer, airport):
-    """
-    Anadir el IATA_Airport
-    """
-    lt.addLast(analyzer['lt airports'], airport)
-    om.put(analyzer['IATA_Airport'], airport['IATA'], airport)
-
 
 def updateLatitudeIndex(mapa, airport):
     airlatitude = round(airport['Latitude'],2)

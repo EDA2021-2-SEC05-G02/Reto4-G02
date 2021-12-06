@@ -59,7 +59,6 @@ def loadInfo(analyzer):
     for airport in input_file:
         model.addAirport(analyzer, airport)
         model.addVertex(analyzer, airport)
-        model.addIATA_Airport(analyzer, airport)
     """
     Routes file
     """
