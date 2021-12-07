@@ -84,12 +84,12 @@ def printAirports(airports):
 
 def printCitiesSameName (cities):
    x = PrettyTable(hrules=prettytable.ALL)
-   x.field_names = ['#','City', 'Population', 'Latitude', 'Longitude', 'Country', 'Admin_name', 'Nearest airport']
-   x._max_width = {'Admin_name':20, 'City': 20, 'Country': 20, 'Nearest airport':20}
+   x.field_names = ['#','City', 'Population', 'Latitude', 'Longitude', 'Country', 'Admin_name']
+   x._max_width = {'Admin_name':20, 'City': 20, 'Country': 20}
    i = 0
    for city in lt.iterator(cities):
        i+=1
-       x.add_row([i, city['city_ascii'], city['population'], city['lat'], city['lng'], city['country'], city['admin_name'], city['airport']['Name']])
+       x.add_row([i, city['city_ascii'], city['population'], city['lat'], city['lng'], city['country'], city['admin_name']])
    print(x)
 
 def printAirInterconection(airport):
@@ -108,12 +108,11 @@ def printCityInfo (city):
     x.add_row([city['city_ascii'], city['population'], city['lat'], city['lng'], city['country'], city['admin_name']])
     print(x)
 
-def printAirportCity (city):
+def printAirportCity (airport, distance):
     x = PrettyTable(hrules=prettytable.ALL)
     x.field_names = ['IATA', 'Name', 'City', 'Country', 'Distance to city (km)']
     x._max_width = {'Name':20, 'City': 20, 'Country': 20}
-    airport = city['airport']
-    x.add_row([airport['IATA'], airport['Name'], airport['City'], airport['Country'], round(city['distance'],2)])
+    x.add_row([airport['IATA'], airport['Name'], airport['City'], airport['Country'], round(distance,2)])
     print(x)
 
 def LoadData(cont):
@@ -192,6 +191,13 @@ def Req3(cont):
         arrival = lt.getElement(arriv_cities,num_destcity)
         
 
+    DepaNearAirport = controller.getNearestAirport(cont, departure)
+    ArrNearAirport = controller.getNearestAirport(cont, arrival)
+
+    DepaDistance = controller.getDistance(departure, DepaNearAirport)
+    ArrDistance = controller.getDistance(arrival, ArrNearAirport)
+
+
     print("="*15, "Req No. 3 Inputs", "="*15)
     print("Depature city:", depa_city)
     printCityInfo(departure)
@@ -200,9 +206,9 @@ def Req3(cont):
 
     print("="*15, "Req No. 3 Answer", "="*15)
     print("+++ The departure airport in", depa_city, "is +++")
-    printAirportCity(departure)
+    printAirportCity(DepaNearAirport, DepaDistance)
     print("\n+++ The arrival airport in", arriv_city, "is +++")
-    printAirportCity(arrival)
+    printAirportCity(ArrNearAirport, ArrDistance)
 
     print("\n+++ Dijkstra's Trip details +++")
     print(" - Total distance:" , "(km)") #TODO Calcular la distancia entre Aeropueto de origen y de destimo + distancia entre la ciudad y el Aeropueto de origen

@@ -36,7 +36,7 @@ from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.Utils import error as error
 from DISClib.Algorithms.Sorting import mergesort as mer
-from haversine import haversine #para instalar: pip install haversine
+from haversine import haversine, inverse_haversine, Direction #para instalar: pip install haversine
 assert cf
 import pandas as pd
 import folium
@@ -131,18 +131,8 @@ def addCity(analyzer, city):
     info['population'] = city['population']
     info['admin_name'] = city['admin_name']
 
-    airport = getNearestAirport(analyzer ,info, 1, 1)
-    info['airport'] = airport
-
-
-    dep = (info['lat'], info['lng'])
-    ari = (airport['Latitude'], airport['Longitude'])
-    distance = getDistance(dep, ari)
-    info['distance'] = distance
-
     lt.addLast(analyzer['lt cities'], info)
     addCitiestoCity(analyzer, info)
-
 
 def addAirport(analyzer, airport):
     info = {}
@@ -153,6 +143,7 @@ def addAirport(analyzer, airport):
     info['IATA'] = airport['IATA']
     info['Latitude'] = float(airport['Latitude'])
     info['Longitude'] = float(airport['Longitude'])
+
     lt.addLast(analyzer['lt airports'], info)
     om.put(analyzer['IATA_Airport'], info['IATA'], info)
     updateLatitudeIndex(analyzer['LatitudeIndex'], info)
@@ -510,78 +501,48 @@ def cmpDistance (a1,a2):
 
 # Funciones auxiliares
 
-def getDistance (departure, arrival):
+def getDistance (departure, airport):
     """
-    distancia en kilometros entre 2 puntos 
-    departure = (latitud, longitud)
-    arrival = (latitud, longitud)
-
-
-    Tomado de: https://pypi.org/project/haversine/
+    distancia en kilometros entre ciudad y aeropuerto
     """
-    return haversine(departure, arrival)
+    city = (departure['lat'], departure['lng'])
+    air = (airport['Latitude'], airport['Longitude'])
+    return haversine(city, air)
 
-def getNearestAirport(analyzer ,city, aumento, iteracion):
+def getNearestAirport(analyzer ,city):
+    mapa = analyzer['LatitudeIndex']
     lat = float(city['lat'])
     lng = float(city['lng'])
-
-    #Aumentar 10km aprox 
-
-    expan_lat = aumento * 0.09 # entre lat 0 y lat 0.09 hay una distancia aprox de 10 km
-    expan_lng = aumento * 0.09 # entre lng 0 y lng 0.09 hay una distancia aprox de 10 km
-
-    mapa = analyzer['LatitudeIndex']
-    ltAirports = lt.newList('ARRAY_LIST')
-
-    rangeLatitud = om.values(mapa,(lat-expan_lat),(lat+expan_lat))
-
-
-
-    for latitud in lt.iterator(rangeLatitud):
-        rangeLongitud = om.values(latitud['Longitude'], (lng-expan_lng), (lng+expan_lng))
-        for longitud in lt.iterator(rangeLongitud):
-            for air in lt.iterator(longitud['airports']):
-                lt.addLast(ltAirports, air)
+    departure = (lat, lng)
+    radio = 10 #Radio de busqueda (km)
     
-    if lt.size(ltAirports) == 0:
-        iteracion += 1
-        if iteracion == 20:
-            aumento *= 10 
-            rta = getNearestAirport(analyzer ,city, aumento+1, iteracion)
+    ltAirport = lt.newList('ARRAY_LIST')
 
-        if iteracion > 22:
-            name = "No airport was found around" , aumento, "km"
-            rta ={'Name': name,
-                    'IATA': "None",
-                    'City': "None",
-                    'Country': "None",
-                    'Latitude': lat,
-                    'Longitude': lng }
-            
-            return rta
+    while lt.size(ltAirport) == 0:        
+        north = inverse_haversine(departure, radio, Direction.NORTH) #(lat, lng)
+        south = inverse_haversine(departure, radio, Direction.SOUTH) #(lat, lng)
+        west = inverse_haversine(departure, radio, Direction.WEST) #(lat, lng)
+        east = inverse_haversine(departure, radio, Direction.EAST) #(lat, lng)
         
-        rta = getNearestAirport(analyzer ,city, aumento+1, iteracion)
-    elif lt.size(ltAirports)== 1:
-        rta = lt.firstElement(ltAirports)
-    else:
-        i = 0
-        ltfinal = lt.newList('ARRAY_LIST')
+        rangeLatitud = om.values(mapa,south[0], north[0])
+        for latitud in lt.iterator(rangeLatitud):
+            rangeLongitud = om.values(latitud['Longitude'], west[1], east[1])
+            for longitud in lt.iterator(rangeLongitud):
+                for air in lt.iterator(longitud['airports']):
+                    lt.addLast(ltAirport, air)
+        
+        radio += 10
 
-        for airport in lt.iterator(ltAirports):
-            i+=1
-            info = {"index": i,
-                    "distance": None}
-            
-            departure = (lat, lng)
-            arrival = (airport['Latitude'], airport['Longitude'])
-            info['distance'] = getDistance(departure, arrival)
-
-            lt.addLast(ltfinal,info)
-            
-        final = mer.sort(ltfinal, cmpDistance)
-        index = lt.firstElement(final)['index']
-
-        rta = lt.getElement(ltAirports, index)
+    contador = radio + 1000
     
-    return rta
+    if lt.size(ltAirport) == 1:
+        return lt.firstElement(ltAirport)
     
+    for ari in lt.iterator(ltAirport): 
+        arrival = (ari['Latitude'], ari['Longitude'])
+        distance = haversine(departure, arrival)
+        if distance < contador:
+            contador = distance
+            airport = ari
+
+    return airport

@@ -125,6 +125,11 @@ def Kosaraju(analyzer):
     """
     return model.Kosaraju(analyzer)
 
+def getDistance(departure, airport):
+    return model.getDistance(departure, airport)
+
+def getNearestAirport(analyzer ,city):
+    return model.getNearestAirport(analyzer ,city)
 #Requerimientos
 
 def AirInterconection (analyzer):
