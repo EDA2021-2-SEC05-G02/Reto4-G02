@@ -32,6 +32,9 @@ import prettytable
 from prettytable import PrettyTable
 assert cf
 
+default_limit = 1000 
+sys.setrecursionlimit(default_limit*1000) 
+
 """
 La vista se encarga de la interacción con el usuario
 Presenta el menu de opciones y por cada seleccion
@@ -53,7 +56,8 @@ def printMenu():
 
 def printFirstLastCity(cities):
    x = PrettyTable(hrules=prettytable.ALL)
-   x.field_names = ['City', 'Country','Lat', 'Lng', 'population']
+   x.field_names = ['City', 'Country','Latitude', 'Longitude', 'population']
+   x._max_width = {'City':20, 'Country': 20}
    city1 = lt.firstElement(cities)
    city2 = lt.lastElement(cities)
    x.add_row([city1['city_ascii'], city1['country'], city1['lat'], city1['lng'], city1['population']])
@@ -63,6 +67,7 @@ def printFirstLastCity(cities):
 def printFirstLastAirport(airports):
    x = PrettyTable(hrules=prettytable.ALL)
    x.field_names = ["IATA", "Name", "City", "Country", "Latitude", "Longitude"]
+   x._max_width = {'Name':20, 'City': 20, 'Country': 20}
    air1 = lt.firstElement(airports)
    air2 = lt.lastElement(airports)
    x.add_row([air1['IATA'], air1['Name'], air1['City'], air1['Country'], air1['Latitude'], air1['Longitude']])
@@ -72,29 +77,50 @@ def printFirstLastAirport(airports):
 def printAirports(airports):
    x = PrettyTable(hrules=prettytable.ALL)
    x.field_names = ["IATA", "Name", "City", "Country", "Latitude", "Longitude"]
+   x._max_width = {'Name':20, 'City': 20, 'Country': 20}
    for airport in lt.iterator(airports):
         x.add_row([airport['IATA'], airport['Name'], airport['City'], airport['Country'], airport['Latitude'], airport['Longitude']])
    print(x)
 
 def printCitiesSameName (cities):
    x = PrettyTable(hrules=prettytable.ALL)
-   x.field_names = ['#','City', 'Population', 'Latitude', 'Longitude', 'Country', 'Admin_name']
+   x.field_names = ['#','City', 'Population', 'Latitude', 'Longitude', 'Country', 'Admin_name', 'Nearest airport']
+   x._max_width = {'Admin_name':20, 'City': 20, 'Country': 20, 'Nearest airport':20}
    i = 0
    for city in lt.iterator(cities):
        i+=1
-       x.add_row([i, city['city_ascii'], city['population'], city['lat'], city['lng'], city['country'], city['admin_name']])
+       x.add_row([i, city['city_ascii'], city['population'], city['lat'], city['lng'], city['country'], city['admin_name'], city['airport']['Name']])
    print(x)
 
 def printAirInterconection(airport):
    x = PrettyTable(hrules=prettytable.ALL)
    x.field_names = ['IATA', 'Airport (Name)', 'City', 'Country', 'Connections', 'Inbound', 'Outbound',]
+   x._max_width = {'Airport (Name)':20, 'City': 20, 'Country': 20}
    for air in lt.iterator(airport):
        x.add_row([air['Airport'], air['Name'], air['City'], air['Country'], air['Interconnections'], air['Inbound'], air['Outbound']])
    print(x)
 
+def printCityInfo (city):
+    x = PrettyTable(hrules=prettytable.ALL)
+    x.field_names = ['City', 'Population', 'Latitude', 'Longitude', 'Country', 'Admin_name']
+    x._max_width = {'Admin_name':20, 'City': 20, 'Country': 20}
+    
+    x.add_row([city['city_ascii'], city['population'], city['lat'], city['lng'], city['country'], city['admin_name']])
+    print(x)
+
+def printAirportCity (city):
+    x = PrettyTable(hrules=prettytable.ALL)
+    x.field_names = ['IATA', 'Name', 'City', 'Country', 'Distance to city (km)']
+    x._max_width = {'Name':20, 'City': 20, 'Country': 20}
+    airport = city['airport']
+    x.add_row([airport['IATA'], airport['Name'], airport['City'], airport['Country'], round(city['distance'],2)])
+    print(x)
+
 def LoadData(cont):
     print("Cargando información de los aeropuertos ....")
+    start = tm.process_time()
     controller.loadData(cont)
+    end = tm.process_time()
     vertex = controller.totalAirperGraph(cont)
     edges = controller.totalConnectionsperGraph(cont)
     city = lt.size(cont['lt cities'])
@@ -115,6 +141,8 @@ def LoadData(cont):
     print("The number of cities are:", city)
     print("First & last City loaded in data structure:")
     printFirstLastCity(cont['lt cities'])
+    total_time = (end - start)
+    print("The time it took to execute the requirement was:", total_time*1000 ,"mseg ->",total_time, "seg\n")
 
 #Requerimientos
 def Req1(cont):
@@ -154,25 +182,27 @@ def Req3(cont):
     if lt.size(depa_cities) > 1:
         print("Se encontraron", lt.size(depa_cities), "ciudades de origen con el mismo nombre")
         printCitiesSameName(depa_cities)
-        num_depacity = input("Seleccione el numero de la ciudad que quiere consultar: ")
+        num_depacity = int(input("Seleccione el numero de la ciudad que quiere consultar: "))
         departure = lt.getElement(depa_cities,num_depacity)
 
     if lt.size(arriv_cities) > 1:
         print("Se encontraron", lt.size(arriv_cities), "ciudades de destino con el mismo nombre")
         printCitiesSameName(arriv_cities)
-        num_destcity = input("Seleccione el numero de la ciudad que quiere consultar: ")
+        num_destcity = int(input("Seleccione el numero de la ciudad que quiere consultar: "))
         arrival = lt.getElement(arriv_cities,num_destcity)
         
 
     print("="*15, "Req No. 3 Inputs", "="*15)
     print("Depature city:", depa_city)
-    print("Arrival city:", arriv_city, "\n")
+    printCityInfo(departure)
+    print("Arrival city:", arriv_city)
+    printCityInfo(arrival)
 
     print("="*15, "Req No. 3 Answer", "="*15)
     print("+++ The departure airport in", depa_city, "is +++")
-    #TODO Imprimir el aeropuerto mas cercano de la ciudad de origen
+    printAirportCity(departure)
     print("\n+++ The arrival airport in", arriv_city, "is +++")
-    #TODO Imprimir el aeropuerto mas cercano de la ciudad de destino
+    printAirportCity(arrival)
 
     print("\n+++ Dijkstra's Trip details +++")
     print(" - Total distance:" , "(km)") #TODO Calcular la distancia entre Aeropueto de origen y de destimo + distancia entre la ciudad y el Aeropueto de origen

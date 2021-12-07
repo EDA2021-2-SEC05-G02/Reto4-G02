@@ -43,6 +43,7 @@ import folium
 import webbrowser
 
 
+
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
 los mismos.
@@ -124,11 +125,21 @@ def newAnalyzer():
 def addCity(analyzer, city):
     info = {}
     info['city_ascii'] = city['city_ascii']
-    info['lat'] = city['lat']
-    info['lng'] = city['lng']
+    info['lat'] = float(city['lat'])
+    info['lng'] = float(city['lng'])
     info['country'] = city['country']
     info['population'] = city['population']
     info['admin_name'] = city['admin_name']
+
+    airport = getNearestAirport(analyzer ,info, 1, 1)
+    info['airport'] = airport
+
+
+    dep = (info['lat'], info['lng'])
+    ari = (airport['Latitude'], airport['Longitude'])
+    distance = getDistance(dep, ari)
+    info['distance'] = distance
+
     lt.addLast(analyzer['lt cities'], info)
     addCitiestoCity(analyzer, info)
 
@@ -492,7 +503,10 @@ def compareFloat(num1, num2):
         return -1
 
 def cmpInterconnections (a1,a2):
-    return a1['Interconnections']>a2['Interconnections']
+    return a1['Interconnections'] > a2['Interconnections']
+
+def cmpDistance (a1,a2):
+    return a1['distance'] < a2['distance']
 
 # Funciones auxiliares
 
@@ -507,13 +521,67 @@ def getDistance (departure, arrival):
     """
     return haversine(departure, arrival)
 
-def getNearestAirport(city, aumento):
-    lat = city['lat']
-    lng = city['lng']
+def getNearestAirport(analyzer ,city, aumento, iteracion):
+    lat = float(city['lat'])
+    lng = float(city['lng'])
 
     #Aumentar 10km aprox 
 
     expan_lat = aumento * 0.09 # entre lat 0 y lat 0.09 hay una distancia aprox de 10 km
     expan_lng = aumento * 0.09 # entre lng 0 y lng 0.09 hay una distancia aprox de 10 km
 
+    mapa = analyzer['LatitudeIndex']
+    ltAirports = lt.newList('ARRAY_LIST')
+
+    rangeLatitud = om.values(mapa,(lat-expan_lat),(lat+expan_lat))
+
+
+
+    for latitud in lt.iterator(rangeLatitud):
+        rangeLongitud = om.values(latitud['Longitude'], (lng-expan_lng), (lng+expan_lng))
+        for longitud in lt.iterator(rangeLongitud):
+            for air in lt.iterator(longitud['airports']):
+                lt.addLast(ltAirports, air)
+    
+    if lt.size(ltAirports) == 0:
+        iteracion += 1
+        if iteracion == 20:
+            aumento *= 10 
+            rta = getNearestAirport(analyzer ,city, aumento+1, iteracion)
+
+        if iteracion > 22:
+            name = "No airport was found around" , aumento, "km"
+            rta ={'Name': name,
+                    'IATA': "None",
+                    'City': "None",
+                    'Country': "None",
+                    'Latitude': lat,
+                    'Longitude': lng }
+            
+            return rta
+        
+        rta = getNearestAirport(analyzer ,city, aumento+1, iteracion)
+    elif lt.size(ltAirports)== 1:
+        rta = lt.firstElement(ltAirports)
+    else:
+        i = 0
+        ltfinal = lt.newList('ARRAY_LIST')
+
+        for airport in lt.iterator(ltAirports):
+            i+=1
+            info = {"index": i,
+                    "distance": None}
+            
+            departure = (lat, lng)
+            arrival = (airport['Latitude'], airport['Longitude'])
+            info['distance'] = getDistance(departure, arrival)
+
+            lt.addLast(ltfinal,info)
+            
+        final = mer.sort(ltfinal, cmpDistance)
+        index = lt.firstElement(final)['index']
+
+        rta = lt.getElement(ltAirports, index)
+    
+    return rta
     
