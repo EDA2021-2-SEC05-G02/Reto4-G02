@@ -6,8 +6,8 @@ import credentials
 access_token = credentials.ACCESS_TOKEN
 headers = {"Authorization": "Bearer " + access_token}
 params = {
-  "latitude": 51,
-  "longitude": 0.4,
+  "latitude": 38.7452,
+  "longitude": -9.1604,
   "radius": 500
 }
 
