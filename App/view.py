@@ -242,7 +242,7 @@ def Req5(cont):
     airIata = input('Ingrese el IATA del aeropuerto fuera de servicio: ').upper()
     vertex = controller.totalAirperGraph(cont)
     edges = controller.totalConnectionsperGraph(cont)
-    affected = controller.OutOfService(cont, airIata)
+    affected, routesDigraph, routesGraph = controller.OutOfService(cont, airIata)
 
     print("="*15, " Req No. 5 Inputs ", "="*15)
     print("Closing the airport with IATA code:", airIata)
@@ -253,9 +253,9 @@ def Req5(cont):
 
     print("\n+++ Removing Airport with IATA:", airIata, "+++")
     print("\n--- Airport-Routes DiGraph ---")
-    print("Original number of Airports:", vertex[0]-1, "and Routes:", edges[0]) #TODO restar los los arcos del aeropuerto
+    print("Resulting number of Airports:", vertex[0]-1, "and Routes:", edges[0]-routesDigraph)
     print("--- Airport-Routes Graph ---")
-    print("Original number of Airports:", vertex[1], "and Routes:", edges[1], "\n") #TODO verificar si el aeropuerto esta en el grafo y si lo esta: restar los los arcos del aeropuerto 
+    print("Resulting number of Airports:", vertex[1]-1, "and Routes:", edges[1]-routesGraph, "\n")
 
     print("="*15, " Req No. 5 Answer ", "="*15)
     print("There are", lt.size(affected), "Airports affected by the removal of", airIata)
