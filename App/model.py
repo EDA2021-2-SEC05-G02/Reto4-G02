@@ -23,8 +23,6 @@
  *
  * Dario Correal - Version inicial
  """
-
-
 from os import error
 import config as cf
 from DISClib.ADT import list as lt
@@ -41,9 +39,8 @@ assert cf
 import pandas as pd
 import folium
 import webbrowser
-
-
-
+import AmadeusAPI as ama
+import json
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
 los mismos.
@@ -167,8 +164,6 @@ def newCity(city):
     entry['valor'] = lt.newList('ARRAY_LIST')
     return entry
 
-
-
 # Funciones para agregar informacion a arboles 
 
 def updateLatitudeIndex(mapa, airport):
@@ -183,7 +178,6 @@ def updateLatitudeIndex(mapa, airport):
     latitudentry['size'] += 1
     updateLongitudeIndex(latitudentry['Longitude'], airport)
 
-
 def updateLongitudeIndex(mapa, airport):
     airlongitude = round(airport['Longitude'], 2)
     entry = om.get(mapa, airlongitude)
@@ -196,8 +190,6 @@ def updateLongitudeIndex(mapa, airport):
     lt.addLast(longitudentry['airports'], airport)
     longitudentry['size'] += 1
     
-
-
 def newLatitude(latitud):
     entry = {'Latitude': None, 'Longitude':None, 'size':0}
     entry['Latitude'] = latitud
@@ -210,8 +202,6 @@ def newLongitude(longitud):
     entry['Longitude'] = longitud
     entry['airports'] = lt.newList('ARRAY_LIST')
     return entry
-
-
 
 # Funciones para agregar informacion grafos
 
@@ -320,7 +310,8 @@ def FirtsAndLast(primeros, ultimos):
         lt.addLast(primeros, item)
     return primeros
 
-# Requerimientos
+# Requerimientos}
+
 #! Req 1
 def AirInterconection(analyzer):
     """
@@ -363,7 +354,6 @@ def SearchCity(analyzer, city):
         value = me.getValue(cities)['valor']
     return value
 
-
 #! Req 4
 
 #! Req 5
@@ -386,6 +376,34 @@ def OutOfService(analyzer, airIata):
     return affected
 
 #! Req 6
+def Req6 (departure, arrival):
+    depa_lat = departure['lat']
+    depa_long = departure['lng']
+    print("\nLatitude:", depa_lat, "Longitude:", depa_long)
+    arriv_lat = arrival['lat']
+    arriv_long = arrival['lng']
+
+    info = ama.GetAirportNearestRelevant(depa_lat, depa_long, arriv_lat, arriv_long)
+    headers = info[0]
+    depa = info[1]
+    arri = info[2]
+
+    data = ama.Requests(headers, depa, arri)
+    # Get IATA code of departure airport
+    depadict = json.loads(data[0])
+    arrivdict = json.loads(data[1])
+    
+    # Get info from the nearest airport to the departure
+    depa_iata = depadict['data']
+    print(depa_iata)
+    departure_iata = depa_iata[0]['iataCode']
+    print(departure_iata)
+
+    # Get info from the nearest airport to the destination
+    arri_iata = arrivdict['data']
+    print(arri_iata)
+    arrival_iata = arri_iata[0]['iataCode']
+    print(arrival_iata)
 
 #! Req 7
 def Mapa(info):

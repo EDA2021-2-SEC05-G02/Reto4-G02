@@ -19,21 +19,15 @@
  * You should have received a copy of the GNU General Public License
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
-
-
 import config as cf
 import sys
 import threading
 import time as tm
-from DISClib.ADT import stack
 import controller
 from DISClib.ADT import list as lt
 import prettytable 
 from prettytable import PrettyTable
 assert cf
-import AmadeusAPI as ama
-from operator import itemgetter
-import json
 
 default_limit = 1000 
 sys.setrecursionlimit(default_limit*1000) 
@@ -53,8 +47,6 @@ def printMenu():
     print("4- (Req 3) Encontrar la ruta más corta entre ciudades")
     print("5- (Req 4) Utilizar las millas de viajero")
     print("6- (Req 5) Cuantificar el efecto de un aeropuerto cerrado")
-    print("7- (Bono) Comparar con servicio WEB externo")
-    print("8- (Bono) Visualizar gráficamente los requerimientos")
     print("0- Salir")
 
 def printFirstLastCity(cities):
@@ -144,7 +136,7 @@ def LoadData(cont):
     print("First & last City loaded in data structure:")
     printFirstLastCity(cont['lt cities'])
     total_time = (end - start)
-    print("The time it took to execute the requirement was:", total_time*1000 ,"mseg ->",total_time, "seg\n")
+    print("The time it took to execute the data load was:", total_time*1000 ,"mseg ->",total_time, "seg\n")
 
 #Requerimientos
 def Req1(cont):
@@ -193,13 +185,11 @@ def Req3(cont):
         num_destcity = int(input("Seleccione el numero de la ciudad que quiere consultar: "))
         arrival = lt.getElement(arriv_cities,num_destcity)
         
-
     DepaNearAirport = controller.getNearestAirport(cont, departure)
     ArrNearAirport = controller.getNearestAirport(cont, arrival)
 
     DepaDistance = controller.getDistance(departure, DepaNearAirport)
     ArrDistance = controller.getDistance(arrival, ArrNearAirport)
-
 
     print("="*15, "Req No. 3 Inputs", "="*15)
     print("Depature city:", depa_city)
@@ -219,6 +209,12 @@ def Req3(cont):
     #TODO Imprimir el camino
     print(" -Trip Stops:")
     #TODO Imprimir los aeropuertos en el que se hace escala + origen y destino
+
+    #Req 6 (Bono)
+    print("\n¿Quieres ejecutar el req 6 (Bono): Comparar con servicio WEB externo? ")
+    rta = input("(si/no): ").lower()
+    if rta == "si":
+        controller.Req6(departure, arrival)
 
 def Req4(cont): 
     city = ""
@@ -271,75 +267,13 @@ def Req5(cont):
         else:
             print("The affected Airports are:")
             printAirports(affected)
+    
+    #Req 7 (Bono)
+    print("\n¿Quieres ejecutar el req 7 (Bono): Visualizar gráficamente los requerimientos? ")
+    rta = input("(si/no): ").lower()
+    if rta == "si":
+        controller.Mapa(affected)
         
-def Req6Bono(cont):
-    depa_city = input('Ingrese la ciudad de origen: ')
-    arriv_city = input('\nIngrese la ciudad de destino: ')
-
-    arriv_cities = controller.SearchCity(cont, arriv_city.lower())
-    depa_cities = controller.SearchCity(cont, depa_city.lower())
-    departure = lt.firstElement(depa_cities)
-    arrival = lt.firstElement(arriv_cities)
-
-    if lt.size(depa_cities) > 1:
-        print("Se encontraron", lt.size(depa_cities), "ciudades de origen con el mismo nombre")
-        printCitiesSameName(depa_cities)
-        num_depacity = int(input("Seleccione el numero de la ciudad que quiere consultar: "))
-        departure = lt.getElement(depa_cities,num_depacity)
-
-    # Get latitude and longitude from departure city
-    depa_lat = departure['lat']
-    depa_long = departure['lng']
-    print("\nLatitude:", depa_lat, "Longitude:", depa_long)
-
-    if lt.size(arriv_cities) > 1:
-        print("Se encontraron", lt.size(arriv_cities), "ciudades de destino con el mismo nombre")
-        printCitiesSameName(arriv_cities)
-        num_destcity = int(input("Seleccione el numero de la ciudad que quiere consultar: "))
-        arrival = lt.getElement(arriv_cities,num_destcity)
-
-    # Get latitude and longitude from destination city
-    arriv_lat = arrival['lat']
-    arriv_long = arrival['lng']
-
-    info = ama.GetAirportNearestRelevant(depa_lat, depa_long, arriv_lat, arriv_long)
-    headers = info[0]
-    depa = info[1]
-    arri = info[2]
-
-    data = ama.Requests(headers, depa, arri)
-    # Get IATA code of departure airport
-    depadict = json.loads(data[0])
-    arrivdict = json.loads(data[1])
-    
-    # Get info from the nearest airport to the departure
-    depa_iata = depadict['data']
-    print(depa_iata)
-    departure_iata = depa_iata[0]['iataCode']
-    print(departure_iata)
-
-    # Get info from the nearest airport to the destination
-    arri_iata = arrivdict['data']
-    print(arri_iata)
-    arrival_iata = arri_iata[0]['iataCode']
-    print(arrival_iata)
-
-
-
-    
-
-    
-    
-
-
-
-    
-
-def Req7Bono(cont): #TODO a lo mejor juntarlo con los demas req para no volver a hacer todo el calculo
-    airIata = input('Ingrese el IATA del aeropuerto fuera de servicio: ')
-    affected = controller.OutOfService(cont, airIata)
-    controller.Mapa(affected)
-
 cont = None #catalog
 
 """
@@ -367,12 +301,6 @@ def run():
 
         elif int(inputs[0]) == 6:
             Req5(cont)
-
-        elif int(inputs[0]) == 7:
-            Req6Bono(cont)
-        
-        elif int(inputs[0]) == 8:
-            Req7Bono(cont)
 
         else:
             sys.exit(0)
