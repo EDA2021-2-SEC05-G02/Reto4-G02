@@ -55,7 +55,7 @@ def newAnalyzer():
     Inicializa el analizador 
     """
     try:
-        analyzer = {}
+        analyzer = {'paths': None}
 
         analyzer['lt cities'] = lt.newList('ARRAY_LIST')
         analyzer['lt airports'] = lt.newList('ARRAY_LIST')
@@ -225,31 +225,26 @@ def addVertex(analyzer, airport):
     except Exception as exp:
         error.reraise(exp, 'Error in model:addAirport')
 
-def AddConnections(analyzer, routes):
+def AddConnections(analyzer, departure, destination, distance):
     """
     Adiciona un arco entre dos aeropuertos.
     """
-    lt.addLast(analyzer['lt routes'], routes)
 
-    edge = gr.getEdge(analyzer['connections'], routes['Departure'], routes['Destination'])
+    edge = gr.getEdge(analyzer['connections'], departure, destination)
     if edge is None:
-        gr.addEdge(analyzer['connections'], routes['Departure'], routes['Destination'], routes['distance_km'])
+        gr.addEdge(analyzer['connections'], departure, destination, distance)
 
-    arrive = gr.getEdge(analyzer['reverse connections'], routes['Destination'], routes['Departure'])
+    arrive = gr.getEdge(analyzer['reverse connections'], destination, departure)
     if arrive is None:
-        gr.addEdge(analyzer['reverse connections'], routes['Destination'], routes['Departure'], routes['distance_km'])
+        gr.addEdge(analyzer['reverse connections'], destination, departure, distance)
 
-    edgeDestinationtoDeparture = gr.getEdge(analyzer['connections'], routes['Destination'], routes['Departure'])
+    edgeDestinationtoDeparture = gr.getEdge(analyzer['connections'], destination, departure)
     
-    """
-    Si el arco de destino a origen del grafo dirigido no esta vacio, se agregan los vertices de destino y origen al grafo no dirigido.
-    Si el arco de destino a origen del grafo no dirigido esta vacio, se agrega el arco de destino a origen junto con el peso.
-    """
     if edgeDestinationtoDeparture is not None:
         
         # Si arco que se busca obtener esta vacio, se agrega
-        if gr.getEdge(analyzer['doubleroute'], routes['Destination'], routes['Departure']) is None:
-            gr.addEdge(analyzer['doubleroute'], routes['Destination'], routes['Departure'], routes['distance_km'])
+        if gr.getEdge(analyzer['doubleroute'], destination, departure) is None:
+            gr.addEdge(analyzer['doubleroute'], destination, departure, distance)
 
     return analyzer, edgeDestinationtoDeparture is not None
 
@@ -309,6 +304,18 @@ def FirtsAndLast(primeros, ultimos):
     for item in lt.iterator(ultimos):
         lt.addLast(primeros, item)
     return primeros
+
+# Dijkstra
+
+def getPath(analyzer, departure):
+    analyzer['path'] = djk.Dijkstra(analyzer['connections'], departure)
+    return analyzer
+
+def Path(analyzer, destination):
+    path = djk.pathTo(analyzer['path'], destination)
+    return path
+
+
 
 # Requerimientos}
 

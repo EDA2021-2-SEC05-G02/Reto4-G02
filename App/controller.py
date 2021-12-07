@@ -66,7 +66,10 @@ def loadInfo(analyzer):
     routes_file = csv.DictReader(open(routesfile, encoding="utf-8"),
                                 delimiter=",")
     for routes in routes_file:
-        model.AddConnections(analyzer, routes) 
+        departure = routes['Departure']
+        destination = routes['Destination']
+        distance = float(routes['distance_km'])
+        model.AddConnections(analyzer, departure, destination, distance) 
     """
     Cities file
     """
@@ -130,6 +133,12 @@ def getDistance(departure, airport):
 
 def getNearestAirport(analyzer ,city):
     return model.getNearestAirport(analyzer ,city)
+
+def getPath(analyzer, departure):
+    return model.getPath(analyzer, departure)
+
+def Path(analyzer, destination):
+    return model.Path(analyzer, destination)
 #Requerimientos
 
 def AirInterconection (analyzer):

@@ -24,6 +24,7 @@ import sys
 import threading
 import time as tm
 import controller
+from DISClib.ADT import stack
 from DISClib.ADT import list as lt
 import prettytable 
 from prettytable import PrettyTable
@@ -273,6 +274,23 @@ def Req5(cont):
     rta = input("(si/no): ").lower()
     if rta == "si":
         controller.Mapa(affected)
+
+def getPath(cont):
+    origen = input("Ingrese el IATA del aeropuerto de origen: ").upper()
+    controller.getPath(cont, origen)
+    destino = input("Ingrese el IATA del aeropuerto de destino: ").upper()
+    path = controller.Path(cont, destino)
+    if path is not None:
+        pathlen = stack.size(path)
+        print('El camino es de longitud: ' + str(pathlen))
+        while (not stack.isEmpty(path)):
+            stop = stack.pop(path)
+            print(stop)
+    else:
+        print('No hay camino')
+
+    
+    
         
 cont = None #catalog
 
@@ -301,6 +319,10 @@ def run():
 
         elif int(inputs[0]) == 6:
             Req5(cont)
+
+        elif int(inputs[0]) == 7:
+            getPath(cont)
+
 
         else:
             sys.exit(0)
