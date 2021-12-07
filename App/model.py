@@ -351,8 +351,8 @@ def SearchCity(analyzer, city):
     return value
 
 def getPath(analyzer, departure, destination):
-    analyzer['path'] = djk.Dijkstra(analyzer['connections'], departure)
-    path = djk.pathTo(analyzer['path'], destination)
+    analyzer['paths'] = djk.Dijkstra(analyzer['connections'], departure)
+    path = djk.pathTo(analyzer['paths'], destination)
     return path
 
 def getStops (analyzer, path):
@@ -475,7 +475,7 @@ def Mapa(info):
             </table>
             """
             .format(**row), script=True),  
-            min_width=300, max_width=300), icon=folium.Icon(color='purple')).add_to(mapa), axis=1)
+            min_width=300, max_width=300), icon=folium.Icon(icon='plane', color='blue')).add_to(mapa), axis=1)
 
     mapa.save('mapa.html')
     webbrowser.open('mapa.html')
