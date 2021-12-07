@@ -134,8 +134,8 @@ def getDistance(departure, airport):
 def getNearestAirport(analyzer ,city):
     return model.getNearestAirport(analyzer ,city)
 
-def getDistancePath(path):
-    return model.getDistancePath(path)
+def getDistancePath(analyzer, destination):
+    return model.getDistancePath(analyzer, destination)
 
 
 #Requerimientos

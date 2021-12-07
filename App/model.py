@@ -573,8 +573,5 @@ def getNearestAirport(analyzer ,city):
 
     return airport
 
-def getDistancePath(path):
-    distance = 0
-    for trip in lt.iterator(path):
-        distance += trip['weight']
-    return distance
+def getDistancePath(analyzer, destination):
+    return djk.distTo(analyzer['path'], destination)

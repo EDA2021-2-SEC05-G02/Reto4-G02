@@ -206,7 +206,7 @@ def Req3(cont):
     if path == None:
         print("\nNo existe una ruta entre los aeropuertos")
     else:
-        totalDistance = controller.getDistancePath(path)
+        totalDistance = controller.getDistancePath(cont, ArrNearAirport['IATA'])
 
         print("="*15, "Req No. 3 Inputs", "="*15)
         print("Depature city:", depa_city)
