@@ -34,6 +34,7 @@ from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.Utils import error as error
 from DISClib.Algorithms.Sorting import mergesort as mer
+from math import inf
 from haversine import haversine, inverse_haversine, Direction #para instalar: pip install haversine
 assert cf
 import pandas as pd
@@ -367,8 +368,10 @@ def SearchCity(analyzer, city):
 def OutOfService(analyzer, airIata):
     grafo = analyzer['connections']
     adjacents = gr.adjacents(grafo,airIata)
+
     reverse = analyzer['reverse connections']
     reverse_adj = gr.adjacents(reverse,airIata)
+
     airportsInfo = analyzer['IATA_Airport']
     affected = lt.newList('ARRAY_LIST')
 
@@ -379,8 +382,13 @@ def OutOfService(analyzer, airIata):
     for iata in lt.iterator(reverse_adj):
         if not lt.isPresent(adjacents, iata):
             info = om.get(airportsInfo, iata)['value']
-            lt.addLast(affected, info)  
-    return affected
+            lt.addLast(affected, info)
+
+    routesDigraph = gr.indegree(grafo,airIata) + gr.outdegree(grafo,airIata)
+
+    routesGraph = gr.degree(analyzer['doubleroute'], airIata)
+
+    return affected, routesDigraph, routesGraph
 
 #! Req 6
 def Req6 (departure, arrival):
@@ -558,7 +566,7 @@ def getNearestAirport(analyzer ,city):
         
         radio += 10
 
-    contador = radio + 1000
+    contador = inf
     
     if lt.size(ltAirport) == 1:
         return lt.firstElement(ltAirport)
