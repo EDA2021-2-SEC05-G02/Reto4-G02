@@ -306,18 +306,6 @@ def FirtsAndLast(primeros, ultimos):
         lt.addLast(primeros, item)
     return primeros
 
-# Dijkstra
-
-def getPath(analyzer, departure):
-    analyzer['path'] = djk.Dijkstra(analyzer['connections'], departure)
-    return analyzer
-
-def Path(analyzer, destination):
-    path = djk.pathTo(analyzer['path'], destination)
-    return path
-
-
-
 # Requerimientos}
 
 #! Req 1
@@ -361,6 +349,11 @@ def SearchCity(analyzer, city):
     if cities:
         value = me.getValue(cities)['valor']
     return value
+
+def getPath(analyzer, departure, destination):
+    analyzer['path'] = djk.Dijkstra(analyzer['connections'], departure)
+    path = djk.pathTo(analyzer['path'], destination)
+    return path
 
 #! Req 4
 
@@ -579,3 +572,9 @@ def getNearestAirport(analyzer ,city):
             airport = ari
 
     return airport
+
+def getDistancePath(path):
+    distance = 0
+    for trip in lt.iterator(path):
+        distance += trip['weight']
+    return distance

@@ -111,6 +111,16 @@ def printAirportCity (airport, distance):
     x.add_row([airport['IATA'], airport['Name'], airport['City'], airport['Country'], round(distance,2)])
     print(x)
 
+def printPath(path):
+    x = PrettyTable(hrules=prettytable.ALL)
+    x.field_names = ['Departure', 'Destination', 'Distance (km)']
+    for trip in lt.iterator(path):
+        x.add_row([trip['vertexA'], trip['vertexB'], trip['weight']])
+    print(x)
+
+
+
+
 def LoadData(cont):
     print("Cargando información de los aeropuertos ....")
     start = tm.process_time()
@@ -192,30 +202,36 @@ def Req3(cont):
     DepaDistance = controller.getDistance(departure, DepaNearAirport)
     ArrDistance = controller.getDistance(arrival, ArrNearAirport)
 
-    print("="*15, "Req No. 3 Inputs", "="*15)
-    print("Depature city:", depa_city)
-    printCityInfo(departure)
-    print("Arrival city:", arriv_city)
-    printCityInfo(arrival)
+    path = controller.getPath(cont, DepaNearAirport['IATA'], ArrNearAirport['IATA'])
+    if path == None:
+        print("\nNo existe una ruta entre los aeropuertos")
+    else:
+        totalDistance = controller.getDistancePath(path)
 
-    print("="*15, "Req No. 3 Answer", "="*15)
-    print("+++ The departure airport in", depa_city, "is +++")
-    printAirportCity(DepaNearAirport, DepaDistance)
-    print("\n+++ The arrival airport in", arriv_city, "is +++")
-    printAirportCity(ArrNearAirport, ArrDistance)
+        print("="*15, "Req No. 3 Inputs", "="*15)
+        print("Depature city:", depa_city)
+        printCityInfo(departure)
+        print("Arrival city:", arriv_city)
+        printCityInfo(arrival)
 
-    print("\n+++ Dijkstra's Trip details +++")
-    print(" - Total distance:" , "(km)") #TODO Calcular la distancia entre Aeropueto de origen y de destimo + distancia entre la ciudad y el Aeropueto de origen
-    print(" - Trip Path:")
-    #TODO Imprimir el camino
-    print(" -Trip Stops:")
-    #TODO Imprimir los aeropuertos en el que se hace escala + origen y destino
+        print("="*15, "Req No. 3 Answer", "="*15)
+        print("+++ The departure airport in", depa_city, "is +++")
+        printAirportCity(DepaNearAirport, DepaDistance)
+        print("\n+++ The arrival airport in", arriv_city, "is +++")
+        printAirportCity(ArrNearAirport, ArrDistance)
 
-    #Req 6 (Bono)
-    print("\n¿Quieres ejecutar el req 6 (Bono): Comparar con servicio WEB externo? ")
-    rta = input("(si/no): ").lower()
-    if rta == "si":
-        controller.Req6(departure, arrival)
+        print("\n+++ Dijkstra's Trip details +++")
+        print(" - Total distance:", totalDistance, "(km)")
+        print(" - Trip Path:")
+        printPath(path)
+        print(" -Trip Stops:")
+        #TODO Imprimir los aeropuertos en el que se hace escala + origen y destino
+
+        #Req 6 (Bono)
+        print("\n¿Quieres ejecutar el req 6 (Bono): Comparar con servicio WEB externo? ")
+        rta = input("(si/no): ").lower()
+        if rta == "si":
+            controller.Req6(departure, arrival)
 
 def Req4(cont): 
     city = ""

@@ -134,11 +134,10 @@ def getDistance(departure, airport):
 def getNearestAirport(analyzer ,city):
     return model.getNearestAirport(analyzer ,city)
 
-def getPath(analyzer, departure):
-    return model.getPath(analyzer, departure)
+def getDistancePath(path):
+    return model.getDistancePath(path)
 
-def Path(analyzer, destination):
-    return model.Path(analyzer, destination)
+
 #Requerimientos
 
 def AirInterconection (analyzer):
@@ -159,6 +158,12 @@ def SearchCity(analyzer, city):
     Req 3
     """
     return model.SearchCity(analyzer, city)
+
+def getPath(analyzer, departure, destination):
+    """
+    Req 3
+    """
+    return model.getPath(analyzer, departure, destination)
 
 def OutOfService(analyzer, airIata):
     """
