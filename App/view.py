@@ -31,7 +31,9 @@ from DISClib.ADT import list as lt
 import prettytable 
 from prettytable import PrettyTable
 assert cf
-from Amadeus.AmadeusAPI import AmadeusAPI as ama 
+import AmadeusAPI as ama
+from operator import itemgetter
+import json
 
 default_limit = 1000 
 sys.setrecursionlimit(default_limit*1000) 
@@ -306,8 +308,23 @@ def Req6Bono(cont):
     arri = info[2]
 
     data = ama.Requests(headers, depa, arri)
-    print(data[0])
-    print(data[1])
+    # Get IATA code of departure airport
+    depadict = json.loads(data[0])
+    arrivdict = json.loads(data[1])
+    
+    # Get info from the nearest airport to the departure
+    depa_iata = depadict['data']
+    print(depa_iata)
+    departure_iata = depa_iata[0]['iataCode']
+    print(departure_iata)
+
+    # Get info from the nearest airport to the destination
+    arri_iata = arrivdict['data']
+    print(arri_iata)
+    arrival_iata = arri_iata[0]['iataCode']
+    print(arrival_iata)
+
+
 
     
 
