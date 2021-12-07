@@ -355,6 +355,25 @@ def getPath(analyzer, departure, destination):
     path = djk.pathTo(analyzer['path'], destination)
     return path
 
+def getStops (analyzer, path):
+    first = True
+    mapa = analyzer['IATA_Airport']
+    stops = lt.newList('ARRAY_LIST')
+
+    for trip in lt.iterator(path):
+        if first:
+            vertexA = trip['vertexA']
+            airportA = om.get(mapa, vertexA)['value']
+            lt.addLast(stops, airportA)
+            first = False
+            
+        vertexB = trip['vertexB']
+        airportB = om.get(mapa, vertexB)['value']
+        lt.addLast(stops, airportB)
+
+    return stops
+
+
 #! Req 4
 
 #! Req 5

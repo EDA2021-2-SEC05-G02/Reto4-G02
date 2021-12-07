@@ -207,6 +207,7 @@ def Req3(cont):
         print("\nNo existe una ruta entre los aeropuertos")
     else:
         totalDistance = controller.getDistancePath(cont, ArrNearAirport['IATA'])
+        stops = controller.getStops(cont, path)
 
         print("="*15, "Req No. 3 Inputs", "="*15)
         print("Depature city:", depa_city)
@@ -225,7 +226,7 @@ def Req3(cont):
         print(" - Trip Path:")
         printPath(path)
         print(" -Trip Stops:")
-        #TODO Imprimir los aeropuertos en el que se hace escala + origen y destino
+        printAirports(stops)
 
         #Req 6 (Bono)
         print("\n¿Quieres ejecutar el req 6 (Bono): Comparar con servicio WEB externo? ")
@@ -291,23 +292,6 @@ def Req5(cont):
     if rta == "si":
         controller.Mapa(affected)
 
-def getPath(cont):
-    origen = input("Ingrese el IATA del aeropuerto de origen: ").upper()
-    controller.getPath(cont, origen)
-    destino = input("Ingrese el IATA del aeropuerto de destino: ").upper()
-    path = controller.Path(cont, destino)
-    if path is not None:
-        pathlen = stack.size(path)
-        print('El camino es de longitud: ' + str(pathlen))
-        while (not stack.isEmpty(path)):
-            stop = stack.pop(path)
-            print(stop)
-    else:
-        print('No hay camino')
-
-    
-    
-        
 cont = None #catalog
 
 """
@@ -335,10 +319,6 @@ def run():
 
         elif int(inputs[0]) == 6:
             Req5(cont)
-
-        elif int(inputs[0]) == 7:
-            getPath(cont)
-
 
         else:
             sys.exit(0)

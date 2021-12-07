@@ -165,6 +165,12 @@ def getPath(analyzer, departure, destination):
     """
     return model.getPath(analyzer, departure, destination)
 
+def getStops(analyzer, path):
+    """
+    Req 3
+    """
+    return model.getStops(analyzer, path)
+
 def OutOfService(analyzer, airIata):
     """
     Req 5
