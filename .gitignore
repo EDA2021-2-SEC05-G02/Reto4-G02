@@ -100,7 +100,8 @@ celerybeat.pid
 # SageMath parsed files
 *.sage.py
 *credentials.py
-*getAccessToken.py
+*getAcessToken.py
+*AmadeusAPI.py
 
 # Environments
 .env

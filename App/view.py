@@ -31,6 +31,7 @@ from DISClib.ADT import list as lt
 import prettytable 
 from prettytable import PrettyTable
 assert cf
+from Amadeus.AmadeusAPI import AmadeusAPI as ama 
 
 default_limit = 1000 
 sys.setrecursionlimit(default_limit*1000) 
@@ -270,7 +271,52 @@ def Req5(cont):
             printAirports(affected)
         
 def Req6Bono(cont):
-    pass
+    depa_city = input('Ingrese la ciudad de origen: ')
+    arriv_city = input('\nIngrese la ciudad de destino: ')
+
+    arriv_cities = controller.SearchCity(cont, arriv_city.lower())
+    depa_cities = controller.SearchCity(cont, depa_city.lower())
+    departure = lt.firstElement(depa_cities)
+    arrival = lt.firstElement(arriv_cities)
+
+    if lt.size(depa_cities) > 1:
+        print("Se encontraron", lt.size(depa_cities), "ciudades de origen con el mismo nombre")
+        printCitiesSameName(depa_cities)
+        num_depacity = int(input("Seleccione el numero de la ciudad que quiere consultar: "))
+        departure = lt.getElement(depa_cities,num_depacity)
+
+    # Get latitude and longitude from departure city
+    depa_lat = departure['lat']
+    depa_long = departure['lng']
+    print("\nLatitude:", depa_lat, "Longitude:", depa_long)
+
+    if lt.size(arriv_cities) > 1:
+        print("Se encontraron", lt.size(arriv_cities), "ciudades de destino con el mismo nombre")
+        printCitiesSameName(arriv_cities)
+        num_destcity = int(input("Seleccione el numero de la ciudad que quiere consultar: "))
+        arrival = lt.getElement(arriv_cities,num_destcity)
+
+    # Get latitude and longitude from destination city
+    arriv_lat = arrival['lat']
+    arriv_long = arrival['lng']
+
+    info = ama.GetAirportNearestRelevant(depa_lat, depa_long, arriv_lat, arriv_long)
+    headers = info[0]
+    depa = info[1]
+    arri = info[2]
+
+    data = ama.Requests(headers, depa, arri)
+    print(data[0])
+    print(data[1])
+
+    
+
+    
+    
+
+
+
+    
 
 def Req7Bono(cont): #TODO a lo mejor juntarlo con los demas req para no volver a hacer todo el calculo
     airIata = input('Ingrese el IATA del aeropuerto fuera de servicio: ')
