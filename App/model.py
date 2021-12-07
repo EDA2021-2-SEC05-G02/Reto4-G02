@@ -34,6 +34,7 @@ from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.Utils import error as error
 from DISClib.Algorithms.Sorting import mergesort as mer
+from math import inf
 from haversine import haversine, inverse_haversine, Direction #para instalar: pip install haversine
 assert cf
 import pandas as pd
@@ -551,7 +552,7 @@ def getNearestAirport(analyzer ,city):
         
         radio += 10
 
-    contador = radio + 1000
+    contador = inf
     
     if lt.size(ltAirport) == 1:
         return lt.firstElement(ltAirport)
