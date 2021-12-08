@@ -30,9 +30,11 @@ from DISClib.ADT import map as mp
 from DISClib.ADT import orderedmap as om
 from DISClib.ADT.graph import gr
 from DISClib.DataStructures import mapentry as me
+from DISClib.ADT import stack
 from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.Algorithms.Graphs import prim
+from DISClib.Algorithms.Graphs import bfs
 from DISClib.Utils import error as error
 from DISClib.Algorithms.Sorting import mergesort as mer
 from math import inf
@@ -397,7 +399,8 @@ def TravelerMiles (analyzer, millas, airport):
     mst = prim.prim(grafo, analyzer['Prim'], airport['IATA']) # E log V
 
     edgeTo = mst['edgeTo']['table']
-    ltNodes = lt.newList('ARRAY_LIST')
+    ltNodes = lt.newList('ARRAY_LIST') 
+    #El número de nodos conectados al árbol de expansión mínima.
     for node in lt.iterator(edgeTo):
         if node['key'] == None:
             continue
@@ -405,15 +408,61 @@ def TravelerMiles (analyzer, millas, airport):
         value = node['value']
         vertexA = value['vertexA']
         vertexB = value['vertexB']
-
+    
         if lt.isPresent(ltNodes, vertexA) == 0:
             lt.addLast(ltNodes, vertexA)
         if lt.isPresent(ltNodes, vertexB) == 0:
             lt.addLast(ltNodes, vertexB)
     
-    totalCost = prim.weightMST(grafo, analyzer['Prim']) # El costo total (distancia en [km]) al árbol de expansión mínima
+    # El costo total (distancia en [km]) al árbol de expansión mínima
+    totalCost = prim.weightMST(grafo, analyzer['Prim'])
 
-    return lt.size(ltNodes), totalCost
+    #Presentar la rama más larga
+    Bfs = bfs.BreadhtFisrtSearch(grafo, airport['IATA'])
+    longestPath = None
+    pathSize = 0
+    for vertex in lt.iterator(ltNodes):
+        if vertex == airport['IATA']:
+            continue
+
+        path = bfs.pathTo(Bfs, vertex)
+        if path == None:
+            continue
+        
+        size = stack.size(path)
+        if size > pathSize:
+            pathSize = size
+            longestPath = path
+    
+    first = True
+    ltPath = lt.newList()
+
+    travel = 0
+    usedKm = 0
+    for vertex in lt.iterator(longestPath):
+        print("vertice:", vertex)
+        if first:
+            Departure = vertex
+            first = False
+            continue
+        print("PATH:",Departure,"-",vertex)
+        edge = gr.getEdge(grafo,Departure,vertex)
+        distance = edge['weight']
+        travel += 2*(distance)
+
+        info = {}
+        info["vertexA"] = Departure
+        info['vertexB'] = vertex
+        info['weight'] = distance
+        Departure = vertex
+        lt.addLast(ltPath, info)
+        if travel < km:
+            usedKm += 2*(distance)
+
+    
+    kmLeft = km - usedKm # si es neg le faltó, sino le sobró
+
+    return lt.size(ltNodes), totalCost, ltPath, usedKm, kmLeft
     
 
 

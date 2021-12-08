@@ -24,7 +24,6 @@ import sys
 import threading
 import time as tm
 import controller
-from DISClib.ADT import stack
 from DISClib.ADT import list as lt
 import prettytable 
 from prettytable import PrettyTable
@@ -117,9 +116,6 @@ def printPath(path):
     for trip in lt.iterator(path):
         x.add_row([trip['vertexA'], trip['vertexB'], trip['weight']])
     print(x)
-
-
-
 
 def LoadData(cont):
     print("Cargando información de los aeropuertos ....")
@@ -259,14 +255,19 @@ def Req4(cont):
     print("+++ Departure Airport for IATA code:", DepaNearAirport['IATA'], "+++")
     printAirportCity(DepaNearAirport, DepaDistance)
     print("\n- Number of possible airports:", rta[0])
-    print("- Max traveling distance between airports:", rta[1], "(km).")
-    print("- Passenger avalaible traveling kilometers:", millas*1.6, "(km).")
+    print("- Max traveling distance between airports:", round(rta[1],2), "(km).")
+    print("- Passenger avalaible traveling kilometers:", round(millas*1.6,2), "(km).")
     print("\n+++ Longest possible route with airport", DepaNearAirport['IATA'], "+++")
-    print("- Longest possible path distance:", "(km).") #TODO
+    print("- Longest possible path distance:",round(rta[3]/2,2), "(km).")
     print("- Longest possible path details:")
-    #TODO imprimir info del camino
+    printPath(rta[2])
     print("-----")
-    print("The passeenger needs", "miles to complete the trip.") #TODO
+    if rta[4] < 0:
+        print("The passeenger needs", round(abs(rta[4]),2) , "kilometers to complete the trip.")
+        print("The passeenger needs", round(abs(rta[4]/1.6),2) , "miles to complete the trip.")
+    else:
+        print("The passeenger has", round(abs(rta[4]),2) , "kilometers left after the trip.")
+        print("The passeenger has", round(abs(rta[4]/1.6),2) , "miles left after the trip.")
     print("-----")
 
 def Req5(cont):
