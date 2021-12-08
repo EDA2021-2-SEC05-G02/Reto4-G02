@@ -32,6 +32,7 @@ from DISClib.ADT.graph import gr
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
+from DISClib.Algorithms.Graphs import prim
 from DISClib.Utils import error as error
 from DISClib.Algorithms.Sorting import mergesort as mer
 from math import inf
@@ -257,6 +258,12 @@ def Kosajaru(analyzer):
     """
     analyzer['components'] = scc.KosarajuSCC(analyzer['connections'])
 
+def PrimMST(analyzer):
+    """
+    Se obtiene PrimMST
+    """
+    analyzer['Prim'] = prim.PrimMST(analyzer['doubleroute'])
+
 def SearchbyIATA(analyzer, IATA):
     """
     Buscar aeropuerto por IATA y saca el valor
@@ -375,6 +382,31 @@ def getStops (analyzer, path):
 
 
 #! Req 4
+
+def TravelerMiles (analyzer, millas, airport):
+    km = millas * 1.6
+
+    grafo = analyzer['doubleroute']
+
+    mst = prim.prim(grafo, analyzer['Prim'], airport['IATA'])
+
+    edgeTo = mst['edgeTo']['table']
+    ltNodes = lt.newList()
+    for node in lt.iterator(edgeTo):
+        if node['key'] == None:
+            continue
+        
+        value = node['value']
+        vertexA = value['vertexA']
+        vertexB = value['vertexB']
+        
+        if lt.isPresent(ltNodes, vertexA) == 0:
+            lt.addLast(ltNodes, vertexA)
+        if lt.isPresent(ltNodes, vertexB) == 0:
+            lt.addLast(ltNodes, vertexB)
+
+        
+
 
 #! Req 5
 def OutOfService(analyzer, airIata):

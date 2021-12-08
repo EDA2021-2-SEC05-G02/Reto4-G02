@@ -48,6 +48,8 @@ def loadData(analyzer):
     loadInfo(analyzer)
     # Inicializa Kosajaru
     Kosajaru(analyzer)
+    # Inicializa PrimMST
+    PrimMST(analyzer)
 
 def loadInfo(analyzer):
     """
@@ -128,6 +130,12 @@ def Kosaraju(analyzer):
     """
     return model.Kosaraju(analyzer)
 
+def PrimMST(analyzer):
+    """
+    PrimMST
+    """
+    return model.PrimMST(analyzer)
+
 def getDistance(departure, airport):
     return model.getDistance(departure, airport)
 
@@ -170,6 +178,12 @@ def getStops(analyzer, path):
     Req 3
     """
     return model.getStops(analyzer, path)
+
+def TravelerMiles(analyzer, millas, airport):
+    """
+    Req 4
+    """
+    return model.TravelerMiles(analyzer, millas, airport)
 
 def OutOfService(analyzer, airIata):
     """
