@@ -179,11 +179,11 @@ def getStops(analyzer, path):
     """
     return model.getStops(analyzer, path)
 
-def TravelerMiles(analyzer, millas):
+def TravelerMiles(analyzer, millas, airport):
     """
     Req 4
     """
-    return model.TravelerMiles(analyzer, millas)
+    return model.TravelerMiles(analyzer, millas, airport)
 
 def OutOfService(analyzer, airIata):
     """

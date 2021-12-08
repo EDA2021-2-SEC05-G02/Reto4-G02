@@ -234,18 +234,34 @@ def Req3(cont):
         if rta == "si":
             controller.Req6(departure, arrival)
 
-def Req4(cont):   
+def Req4(cont): 
+    depa_city = input('Ingrese la ciudad de origen: ')
+    depa_cities = controller.SearchCity(cont, depa_city.lower())
+    departure = lt.firstElement(depa_cities)
+    if lt.size(depa_cities) > 1:
+        print("Se encontraron", lt.size(depa_cities), "ciudades de origen con el mismo nombre")
+        printCitiesSameName(depa_cities)
+        num_depacity = int(input("Seleccione el numero de la ciudad que quiere consultar: "))
+        departure = lt.getElement(depa_cities,num_depacity)
+
     millas = float(input("Ingrese la cantidad de millas disponibles: "))
 
-    controller.TravelerMiles(cont, millas)
+    DepaNearAirport = controller.getNearestAirport(cont, departure)
+    DepaDistance = controller.getDistance(departure, DepaNearAirport)
+
+    rta = controller.TravelerMiles(cont, millas, DepaNearAirport)
 
     print("="*15, "Req No. 4 Inputs", "="*15)
+    print("Departure IATA code:", DepaNearAirport['IATA'])
     print("Available Travel Miles:",millas, "\n")
 
     print("="*15, "Req No. 4 Answer", "="*15)
-    print("- Max traveling distance between airports:", "(km).") #TODO
-    print("- Passenger avalaible traveling miles:", "(km).") #TODO
-    print("\n+++ Longest possible +++")
+    print("+++ Departure Airport for IATA code:", DepaNearAirport['IATA'], "+++")
+    printAirportCity(DepaNearAirport, DepaDistance)
+    print("\n- Number of possible airports:", rta[0])
+    print("- Max traveling distance between airports:", rta[1], "(km).")
+    print("- Passenger avalaible traveling kilometers:", millas*1.6, "(km).")
+    print("\n+++ Longest possible route with airport", DepaNearAirport['IATA'], "+++")
     print("- Longest possible path distance:", "(km).") #TODO
     print("- Longest possible path details:")
     #TODO imprimir info del camino

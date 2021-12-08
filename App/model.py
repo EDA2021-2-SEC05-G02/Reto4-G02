@@ -389,11 +389,34 @@ def getStops (analyzer, path):
     return stops
 
 #! Req 4
-def TravelerMiles (analyzer, millas):
-    """
-    REQ 4
-    """
+def TravelerMiles (analyzer, millas, airport):
     km = millas * 1.6
+
+    grafo = analyzer['doubleroute']
+
+    mst = prim.prim(grafo, analyzer['Prim'], airport['IATA']) # E log V
+
+    edgeTo = mst['edgeTo']['table']
+    ltNodes = lt.newList('ARRAY_LIST')
+    for node in lt.iterator(edgeTo):
+        if node['key'] == None:
+            continue
+
+        value = node['value']
+        vertexA = value['vertexA']
+        vertexB = value['vertexB']
+
+        if lt.isPresent(ltNodes, vertexA) == 0:
+            lt.addLast(ltNodes, vertexA)
+        if lt.isPresent(ltNodes, vertexB) == 0:
+            lt.addLast(ltNodes, vertexB)
+    
+    totalCost = prim.weightMST(grafo, analyzer['Prim']) # El costo total (distancia en [km]) al árbol de expansión mínima
+
+    return lt.size(ltNodes), totalCost
+    
+
+
 
 #! Req 5
 def OutOfService(analyzer, airIata):
