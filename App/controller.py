@@ -100,6 +100,12 @@ def getFirst(lista, num):
 def FirtsAndLast(primeros, ultimos):
     return model.FirtsAndLast(primeros, ultimos)
 
+def SearchbyIATA(analyzer, iata):
+    """
+    Buscar aeropuerto por IATA
+    """
+    return model.SearchbyIATA(analyzer, iata)
+
 def totalAirperGraph(analyzer):
     """
     Total de paradas de autobus

@@ -117,6 +117,13 @@ def printPath(path):
         x.add_row([trip['vertexA'], trip['vertexB'], trip['weight']])
     print(x)
 
+def printAirport(airport):
+   x = PrettyTable(hrules=prettytable.ALL)
+   x.field_names = ["IATA", "Name", "City", "Country", "Latitude", "Longitude"]
+   x._max_width = {'Name':20, 'City': 20, 'Country': 20}
+   x.add_row([airport['IATA'], airport['Name'], airport['City'], airport['Country'], airport['Latitude'], airport['Longitude']])
+   print(x)
+
 def LoadData(cont):
     print("Cargando información de los aeropuertos ....")
     start = tm.process_time()
@@ -144,6 +151,7 @@ def LoadData(cont):
     printFirstLastCity(cont['lt cities'])
     total_time = (end - start)
     print("The time it took to execute the data load was:", total_time*1000 ,"mseg ->",total_time, "seg\n")
+    
 
 #Requerimientos
 def Req1(cont):
@@ -157,19 +165,33 @@ def Req1(cont):
     print('Connected airports inside network: ',lt.size(airports))
     print("TOP 5 most connected airports...")
     printAirInterconection(top5)
+    #Req 1 (Bono)
+    print("\n¿Quieres ejecutar el req 1 (Bono): Visualizar gráficamente los requerimientos? ")
+    rta = input("(si/no): ").lower()
+    if rta == "si":
+        controller.Mapa(top5)
 
 def Req2(cont):
     air1 = input('Ingrese el IATA del aeropuerto 1: ').upper()
     air2 = input('Ingrese el IATA del aeropuerto 2: ').upper()
     airport = controller.AirCluster(cont, air1, air2)
-
     print("="*15, "Req No. 2 Inputs", "="*15)
     print("Airport-1 IATA Code:", air1)
-    print("Airport-2 IATA Code:", air2, "\n")
-
+    iata1 = controller.SearchbyIATA(cont, air1)
+    printAirport(iata1)
+    print("Airport-2 IATA Code:", air2)
+    iata2 = controller.SearchbyIATA(cont, air2)
+    printAirport(iata2)
+    lista = lt.newList()
+    lt.addLast(lista, iata1)
+    lt.addLast(lista, iata2)
     print("="*15, "Req No. 2 Answer", "="*15)
     print("Number of SCC in Airport-Route network:", airport[0])
     print("Does Airport-1 & Airport-2 with IATA code", air1, "and", air2, "belong together?", airport[1])
+    print("\n¿Quieres ejecutar el req 2 (Bono): Visualizar gráficamente los requerimientos? ")
+    rta = input("(si/no): ").lower()
+    if rta == "si":
+        controller.Mapa(lista)
 
 def Req3(cont):
     depa_city = input('Ingrese la ciudad de origen: ')

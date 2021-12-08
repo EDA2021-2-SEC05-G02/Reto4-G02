@@ -336,9 +336,12 @@ def AirInterconection(analyzer):
         airport=om.get(analyzer['IATA_Airport'], vertex)['value']
         info={'Airport':vertex,
               'Interconnections': num_connections,
+              'IATA': airport['IATA'],
               'Name':airport['Name'],
               'City':airport['City'],
               'Country': airport['Country'],
+              'Latitude':airport['Latitude'],
+              'Longitude':airport['Longitude'],
               'Inbound': inbound,
               'Outbound': outbound}
         lt.addLast(interconnections,info)
