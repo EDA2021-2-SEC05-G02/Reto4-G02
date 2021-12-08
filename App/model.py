@@ -651,4 +651,4 @@ def getNearestAirport(analyzer ,city):
     return airport
 
 def getDistancePath(analyzer, destination):
-    return djk.distTo(analyzer['path'], destination)
+    return djk.distTo(analyzer['paths'], destination)
