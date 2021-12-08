@@ -319,10 +319,11 @@ def FirtsAndLast(primeros, ultimos):
 def AirInterconection(analyzer):
     """
     Retorna la lista de aeropuertos que tienen interconexiones entre ellos en cada uno de los grafos y el total de conexiones
+    v = numero de vertices del grafo de conexiones
     """
     interconnections=lt.newList(datastructure="ARRAY_LIST")
-    vertices= gr.vertices(analyzer['connections'])
-    for vertex in lt.iterator(vertices):
+    vertices= gr.vertices(analyzer['connections']) 
+    for vertex in lt.iterator(vertices): #O(v)
         inbound = gr.indegree(analyzer['connections'],vertex)
         outbound = gr.outdegree(analyzer['connections'],vertex)
         num_connections = inbound + outbound
@@ -344,22 +345,29 @@ def AirInterconection(analyzer):
 def AirCluster(analyzer, vertexA, vertexB):
     """
     Retorna el total de clusters presentes en la red de aeropuertos y devuelve un valor booleano si los dos aeropuertos estan en el mismo cluster.
+    Complejidad O(E + V)
     """    
-    total = scc.connectedComponents(analyzer['components'])
-    samecluster =  scc.stronglyConnected(analyzer['components'], vertexA, vertexB)  
+    total = scc.connectedComponents(analyzer['components']) # E + V
+    samecluster =  scc.stronglyConnected(analyzer['components'], vertexA, vertexB) # E + V 
     return total, samecluster
 
 #! Req 3
 def SearchCity(analyzer, city):
-    cities = mp.get(analyzer['cities'], city)
+    """
+    Compeljidad
+    """
+    cities = mp.get(analyzer['cities'], city) # O(1)
     value = None
     if cities:
-        value = me.getValue(cities)['valor']
+        value = me.getValue(cities)['valor'] # O(1)
     return value
 
 def getPath(analyzer, departure, destination):
+    """
+    Complejidad O(E log V)
+    """
     analyzer['paths'] = djk.Dijkstra(analyzer['connections'], departure)
-    path = djk.pathTo(analyzer['paths'], destination)
+    path = djk.pathTo(analyzer['paths'], destination) # E log V
     return path
 
 def getStops (analyzer, path):
@@ -388,7 +396,7 @@ def TravelerMiles (analyzer, millas, airport):
 
     grafo = analyzer['doubleroute']
 
-    mst = prim.prim(grafo, analyzer['Prim'], airport['IATA'])
+    mst = prim.prim(grafo, analyzer['Prim'], airport['IATA']) # E log V
 
     edgeTo = mst['edgeTo']['table']
     ltNodes = lt.newList()
@@ -410,6 +418,11 @@ def TravelerMiles (analyzer, millas, airport):
 
 #! Req 5
 def OutOfService(analyzer, airIata):
+    """
+    n = numero de elementos en el RBT de aeropuertos
+    a = numero de vertices adyacentes en el grafo conexiones
+    i = numero de vertices adyacentes en el grafo conexiones invertidas
+    """
     grafo = analyzer['connections']
     adjacents = gr.adjacents(grafo,airIata)
 
@@ -419,13 +432,13 @@ def OutOfService(analyzer, airIata):
     airportsInfo = analyzer['IATA_Airport']
     affected = lt.newList('ARRAY_LIST')
 
-    for iata in lt.iterator(adjacents):
-        info = om.get(airportsInfo, iata)['value']
+    for iata in lt.iterator(adjacents): # O(a)
+        info = om.get(airportsInfo, iata)['value'] #O(a*log2(n))
         lt.addLast(affected, info)
 
-    for iata in lt.iterator(reverse_adj):
+    for iata in lt.iterator(reverse_adj): # O(i)
         if not lt.isPresent(adjacents, iata):
-            info = om.get(airportsInfo, iata)['value']
+            info = om.get(airportsInfo, iata)['value'] #O(i*log2(n))
             lt.addLast(affected, info)
 
     routesDigraph = gr.indegree(grafo,airIata) + gr.outdegree(grafo,airIata)
