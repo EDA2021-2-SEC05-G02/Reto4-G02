@@ -318,7 +318,9 @@ def FirtsAndLast(primeros, ultimos):
 #! Req 1
 def AirInterconection(analyzer):
     """
-    Retorna la lista de aeropuertos que tienen interconexiones entre ellos en cada uno de los grafos y el total de conexiones
+    REQ 1:
+    Retorna la lista de aeropuertos que tienen interconexiones entre
+    ellos en cada uno de los grafos y el total de conexiones
     v = numero de vertices del grafo de conexiones
     """
     interconnections=lt.newList(datastructure="ARRAY_LIST")
@@ -344,7 +346,11 @@ def AirInterconection(analyzer):
 #! Req 2
 def AirCluster(analyzer, vertexA, vertexB):
     """
-    Retorna el total de clusters presentes en la red de aeropuertos y devuelve un valor booleano si los dos aeropuertos estan en el mismo cluster.
+    REQ 2:
+    (Kosajaru se hace en la carga de datos)
+    Retorna el total de clusters presentes en la red de aeropuertos y
+    devuelve un valor booleano si los dos aeropuertos estan en el mismo cluster.
+
     Complejidad O(E + V)
     """    
     total = scc.connectedComponents(analyzer['components']) # E + V
@@ -352,18 +358,9 @@ def AirCluster(analyzer, vertexA, vertexB):
     return total, samecluster
 
 #! Req 3
-def SearchCity(analyzer, city):
-    """
-    Compeljidad
-    """
-    cities = mp.get(analyzer['cities'], city) # O(1)
-    value = None
-    if cities:
-        value = me.getValue(cities)['valor'] # O(1)
-    return value
-
 def getPath(analyzer, departure, destination):
     """
+    REQ 3
     Complejidad O(E log V)
     """
     analyzer['paths'] = djk.Dijkstra(analyzer['connections'], departure)
@@ -371,6 +368,9 @@ def getPath(analyzer, departure, destination):
     return path
 
 def getStops (analyzer, path):
+    """
+    REQ 3
+    """
     first = True
     mapa = analyzer['IATA_Airport']
     stops = lt.newList('ARRAY_LIST')
@@ -388,37 +388,17 @@ def getStops (analyzer, path):
 
     return stops
 
-
 #! Req 4
-
-def TravelerMiles (analyzer, millas, airport):
+def TravelerMiles (analyzer, millas):
+    """
+    REQ 4
+    """
     km = millas * 1.6
-
-    grafo = analyzer['doubleroute']
-
-    mst = prim.prim(grafo, analyzer['Prim'], airport['IATA']) # E log V
-
-    edgeTo = mst['edgeTo']['table']
-    ltNodes = lt.newList()
-    for node in lt.iterator(edgeTo):
-        if node['key'] == None:
-            continue
-        
-        value = node['value']
-        vertexA = value['vertexA']
-        vertexB = value['vertexB']
-        
-        if lt.isPresent(ltNodes, vertexA) == 0:
-            lt.addLast(ltNodes, vertexA)
-        if lt.isPresent(ltNodes, vertexB) == 0:
-            lt.addLast(ltNodes, vertexB)
-
-        
-
 
 #! Req 5
 def OutOfService(analyzer, airIata):
     """
+    REQ 5
     n = numero de elementos en el RBT de aeropuertos
     a = numero de vertices adyacentes en el grafo conexiones
     i = numero de vertices adyacentes en el grafo conexiones invertidas
@@ -590,6 +570,16 @@ def cmpDistance (a1,a2):
     return a1['distance'] < a2['distance']
 
 # Funciones auxiliares
+
+def SearchCity(analyzer, city):
+    """
+    Compeljidad O(1)
+    """
+    cities = mp.get(analyzer['cities'], city) # O(1)
+    value = None
+    if cities:
+        value = me.getValue(cities)['valor'] # O(1)
+    return value
 
 def getDistance (departure, airport):
     """
