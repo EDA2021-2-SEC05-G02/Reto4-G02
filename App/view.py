@@ -250,7 +250,8 @@ def Req3(cont):
         print("\n¿Quieres ejecutar el req 6 (Bono): Comparar con servicio WEB externo? ")
         rta = input("(si/no): ").lower()
         if rta == "si":
-            controller.Req6(departure, arrival)
+            controller.Req6(departure, arrival, depa_city, arriv_city)
+               
 
 def Req4(cont): 
     depa_city = input('Ingrese la ciudad de origen: ')

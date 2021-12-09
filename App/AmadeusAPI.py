@@ -5,11 +5,11 @@ import getAcessToken
 # https://developers.amadeus.com/self-service/category/air/api-doc/airport-nearest-relevant/api-reference
 
 
-#dept_lat = 38.7452
-#dept_long = -9.1604
+#dept_lat = 59.95
+#dept_long = 30.3167
 
-#arriv_lat = 54.9
-#arriv_long = -1.52
+#arriv_lat = 38.7452
+#arriv_long = -9.1604
 
 
 def GetAirportNearestRelevant(dept_lat, dept_long, arriv_lat, arriv_long):
@@ -40,6 +40,7 @@ def Requests(headers, departure, destination):
     departure = requests.get('https://test.api.amadeus.com/v1/reference-data/locations/airports', headers=headers, params=departure)
     destination = requests.get('https://test.api.amadeus.com/v1/reference-data/locations/airports', headers=headers, params=destination)
     return departure.text, destination.text
+
 
 #requests = Requests(info[0], info[1], info[2])
 #departure = requests[0]

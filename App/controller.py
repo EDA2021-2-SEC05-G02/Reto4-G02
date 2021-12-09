@@ -197,11 +197,11 @@ def OutOfService(analyzer, airIata):
     """
     return model.OutOfService(analyzer, airIata)
 
-def Req6(departure, arrival):
+def Req6(departure, arrival, city1, city2):
     """
     Req 6
     """
-    return model.Req6(departure, arrival)
+    return model.Req6(departure, arrival, city1, city2)
 
 def Mapa(info):
     """

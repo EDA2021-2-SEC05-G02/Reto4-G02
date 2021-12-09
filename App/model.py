@@ -326,7 +326,7 @@ def AirInterconection(analyzer):
     v = numero de vertices del grafo de conexiones
     """
     interconnections=lt.newList(datastructure="ARRAY_LIST")
-    vertices= gr.vertices(analyzer['connections']) 
+    vertices= gr.vertices(analyzer['connections']) #O(|V|)
     for vertex in lt.iterator(vertices): #O(v)
         inbound = gr.indegree(analyzer['connections'],vertex)
         outbound = gr.outdegree(analyzer['connections'],vertex)
@@ -503,10 +503,9 @@ def OutOfService(analyzer, airIata):
     return affected, routesDigraph, routesGraph
 
 #! Req 6
-def Req6 (departure, arrival):
+def Req6 (departure, arrival, city1, city2):
     depa_lat = departure['lat']
     depa_long = departure['lng']
-    print("\nLatitude:", depa_lat, "Longitude:", depa_long)
     arriv_lat = arrival['lat']
     arriv_long = arrival['lng']
 
@@ -516,21 +515,33 @@ def Req6 (departure, arrival):
     arri = info[2]
 
     data = ama.Requests(headers, depa, arri)
-    # Get IATA code of departure airport
+    # Get JSON data
     depadict = json.loads(data[0])
     arrivdict = json.loads(data[1])
     
-    # Get info from the nearest airport to the departure
-    depa_iata = depadict['data']
-    print(depa_iata)
-    departure_iata = depa_iata[0]['iataCode']
-    print(departure_iata)
+    print("\n")
 
-    # Get info from the nearest airport to the destination
+    depa_iata = depadict['data']
+
+    if depa_iata == []:
+        print("No airport found near " + city1 + " on Airport-Nearest-Relevant API")
+    else:
+        print("The nearest airport to " + city1 + " is: ")
+        print(depa_iata)
+        departure_iata = depa_iata[0]['iataCode']
+        print('El IATA del aerpuerto de salida es: ' + departure_iata)
+
+
+    print("\n")
+
     arri_iata = arrivdict['data']
-    print(arri_iata)
-    arrival_iata = arri_iata[0]['iataCode']
-    print(arrival_iata)
+    if arri_iata == None:
+        print("No airport found near " + city2 + " on Airport-Nearest-Relevant API")
+    else:
+        print("The nearest airport to " + city2 + " is: ")
+        print(arri_iata)
+        arrival_iata = arri_iata[0]['iataCode']
+        print('El IATA del aerpuerto de llegada es: ' + arrival_iata)
 
 #! Req 7
 def Mapa(info):
