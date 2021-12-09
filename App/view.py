@@ -155,6 +155,7 @@ def LoadData(cont):
 
 #Requerimientos
 def Req1(cont):
+    start = tm.process_time()
     airports=controller.AirInterconection(cont)
     top5 = controller.getFirst(airports, 5)
     print("="*15, "Req No. 1 Inputs", "="*15)
@@ -165,6 +166,9 @@ def Req1(cont):
     print('Connected airports inside network: ',lt.size(airports))
     print("TOP 5 most connected airports...")
     printAirInterconection(top5)
+    end = tm.process_time()
+    total_time = (end - start)
+    print("The time it took to execute the requirement was:", total_time*1000 ,"mseg ->",total_time, "seg\n")
     #Req 1 (Bono)
     print("\n¿Quieres ejecutar el req 1 (Bono): Visualizar gráficamente los requerimientos? ")
     rta = input("(si/no): ").lower()
@@ -172,6 +176,7 @@ def Req1(cont):
         controller.Mapa(top5)
 
 def Req2(cont):
+    start = tm.process_time()
     air1 = input('Ingrese el IATA del aeropuerto 1: ').upper()
     air2 = input('Ingrese el IATA del aeropuerto 2: ').upper()
     airport = controller.AirCluster(cont, air1, air2)
@@ -188,12 +193,16 @@ def Req2(cont):
     print("="*15, "Req No. 2 Answer", "="*15)
     print("Number of SCC in Airport-Route network:", airport[0])
     print("Does Airport-1 & Airport-2 with IATA code", air1, "and", air2, "belong together?", airport[1])
+    end = tm.process_time()
+    total_time = (end - start)
+    print("The time it took to execute the requirement was:", total_time*1000 ,"mseg ->",total_time, "seg\n")
     print("\n¿Quieres ejecutar el req 2 (Bono): Visualizar gráficamente los requerimientos? ")
     rta = input("(si/no): ").lower()
     if rta == "si":
         controller.Mapa(lista)
 
 def Req3(cont):
+    start = tm.process_time()
     depa_city = input('Ingrese la ciudad de origen: ')
     arriv_city = input('\nIngrese la ciudad de destino: ')
 
@@ -245,6 +254,10 @@ def Req3(cont):
         printPath(path)
         print(" -Trip Stops:")
         printAirports(stops)
+        end = tm.process_time()
+        total_time = (end - start)
+        print("The time it took to execute the requirement was:", total_time*1000 ,"mseg ->",total_time, "seg\n")
+        print("\n¿Quieres ejecutar el req 3 (Bono): Visualizar gráficamente los requerimientos? ")
 
         #Req 6 (Bono)
         print("\n¿Quieres ejecutar el req 6 (Bono): Comparar con servicio WEB externo? ")
@@ -254,6 +267,7 @@ def Req3(cont):
                
 
 def Req4(cont): 
+    start = tm.process_time()
     depa_city = input('Ingrese la ciudad de origen: ')
     depa_cities = controller.SearchCity(cont, depa_city.lower())
     departure = lt.firstElement(depa_cities)
@@ -292,8 +306,12 @@ def Req4(cont):
         print("The passeenger has", round(abs(rta[4]),2) , "kilometers left after the trip.")
         print("The passeenger has", round(abs(rta[4]/1.6),2) , "miles left after the trip.")
     print("-----")
+    end = tm.process_time()
+    total_time = (end - start)
+    print("The time it took to execute the requirement was:", total_time*1000 ,"mseg ->",total_time, "seg\n")
 
 def Req5(cont):
+    start = tm.process_time()
     airIata = input('Ingrese el IATA del aeropuerto fuera de servicio: ').upper()
     vertex = controller.totalAirperGraph(cont)
     edges = controller.totalConnectionsperGraph(cont)
@@ -324,6 +342,9 @@ def Req5(cont):
             printAirports(affected)
     
     #Req 7 (Bono)
+    end = tm.process_time()
+    total_time = (end - start)
+    print("The time it took to execute the requirement was:", total_time*1000 ,"mseg ->",total_time, "seg\n")
     print("\n¿Quieres ejecutar el req 7 (Bono): Visualizar gráficamente los requerimientos? ")
     rta = input("(si/no): ").lower()
     if rta == "si":

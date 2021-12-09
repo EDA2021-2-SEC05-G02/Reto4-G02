@@ -55,7 +55,7 @@ def loadInfo(analyzer):
     """
     Airports File
     """
-    airportfile = cf.data_dir + "airports-utf8-small.csv"
+    airportfile = cf.data_dir + "airports-utf8-5pct.csv"
     input_file = csv.DictReader(open(airportfile, encoding="utf-8"),
                                 delimiter=",")
     for airport in input_file:
@@ -64,7 +64,7 @@ def loadInfo(analyzer):
     """
     Routes file
     """
-    routesfile = cf.data_dir + "routes-utf8-small.csv"
+    routesfile = cf.data_dir + "routes-utf8-5pct.csv"
     routes_file = csv.DictReader(open(routesfile, encoding="utf-8"),
                                 delimiter=",")
     for routes in routes_file:

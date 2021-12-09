@@ -328,8 +328,8 @@ def AirInterconection(analyzer):
     interconnections=lt.newList(datastructure="ARRAY_LIST")
     vertices= gr.vertices(analyzer['connections']) #O(|V|)
     for vertex in lt.iterator(vertices): #O(v)
-        inbound = gr.indegree(analyzer['connections'],vertex)
-        outbound = gr.outdegree(analyzer['connections'],vertex)
+        inbound = gr.indegree(analyzer['connections'],vertex) #O(|E| + |V|)
+        outbound = gr.outdegree(analyzer['connections'],vertex) #O(|E| + |V|)
         num_connections = inbound + outbound
         if num_connections == 0:
             continue
