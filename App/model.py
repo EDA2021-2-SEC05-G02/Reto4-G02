@@ -35,6 +35,7 @@ from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.Algorithms.Graphs import prim
 from DISClib.Algorithms.Graphs import bfs
+from DISClib.Algorithms.Graphs import dfs
 from DISClib.Utils import error as error
 from DISClib.Algorithms.Sorting import mergesort as mer
 from math import inf
@@ -223,7 +224,6 @@ def addVertex(analyzer, airport):
         if not gr.containsVertex(analyzer['doubleroute'], airport['IATA']):
             gr.insertVertex(analyzer['doubleroute'], airport['IATA'])
 
-
         return analyzer
 
     except Exception as exp:
@@ -315,7 +315,7 @@ def FirtsAndLast(primeros, ultimos):
         lt.addLast(primeros, item)
     return primeros
 
-# Requerimientos}
+######### Requerimientos #########
 
 #! Req 1
 def AirInterconection(analyzer):
@@ -403,6 +403,7 @@ def TravelerMiles (analyzer, millas, airport):
 
     edgeTo = mst['edgeTo']['table']
     ltNodes = lt.newList('ARRAY_LIST') 
+    
     #El número de nodos conectados al árbol de expansión mínima.
     for node in lt.iterator(edgeTo):
         if node['key'] == None:
@@ -414,21 +415,23 @@ def TravelerMiles (analyzer, millas, airport):
     
         if lt.isPresent(ltNodes, vertexA) == 0:
             lt.addLast(ltNodes, vertexA)
+            print(vertexA)
         if lt.isPresent(ltNodes, vertexB) == 0:
             lt.addLast(ltNodes, vertexB)
+            print(vertexB)
     
     # El costo total (distancia en [km]) al árbol de expansión mínima
     totalCost = prim.weightMST(grafo, analyzer['Prim'])
 
     #Presentar la rama más larga
-    Bfs = bfs.BreadhtFisrtSearch(grafo, airport['IATA'])
+    Dfs = dfs.DepthFirstSearch(grafo, airport['IATA'])
     longestPath = None
     pathSize = 0
     for vertex in lt.iterator(ltNodes):
         if vertex == airport['IATA']:
             continue
 
-        path = bfs.pathTo(Bfs, vertex)
+        path = dfs.pathTo(Dfs, vertex)
         if path == None:
             continue
         
@@ -443,12 +446,10 @@ def TravelerMiles (analyzer, millas, airport):
     travel = 0
     usedKm = 0
     for vertex in lt.iterator(longestPath):
-        print("vertice:", vertex)
         if first:
             Departure = vertex
             first = False
             continue
-        print("PATH:",Departure,"-",vertex)
         edge = gr.getEdge(grafo,Departure,vertex)
         distance = edge['weight']
         travel += 2*(distance)
@@ -462,14 +463,10 @@ def TravelerMiles (analyzer, millas, airport):
         if travel < km:
             usedKm += 2*(distance)
 
-    
     kmLeft = km - usedKm # si es neg le faltó, sino le sobró
 
     return lt.size(ltNodes), totalCost, ltPath, usedKm, kmLeft
     
-
-
-
 #! Req 5
 def OutOfService(analyzer, airIata):
     """
@@ -530,7 +527,6 @@ def Req6 (departure, arrival, city1, city2):
         print(depa_iata)
         departure_iata = depa_iata[0]['iataCode']
         print('El IATA del aerpuerto de salida es: ' + departure_iata)
-
 
     print("\n")
 
